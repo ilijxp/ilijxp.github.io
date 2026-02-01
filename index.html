@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio OS Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS VARIJABLE I GLOBALNI STILOVI --- */
+        :root {
+            --primary-color: #0078d7;
+            --taskbar-height: 45px;
+            --bg-glass: rgba(255, 255, 255, 0.15);
+            --window-bg: #f0f0f0;
+            --accent: #0078d7;
+            --accent-hover: #005a9e;
+            --text-dark: #222;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('content/wallpaper.png') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #2c3e50;
+            position: relative;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #0078d7, #005a9e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .user-list {
+            margin: 20px 0;
+        }
+
+        .user-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .user-option:hover {
+            background: #e8f4ff;
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .user-option.selected {
+            background: #e8f4ff;
+            border-color: var(--accent);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0078d7, #005a9e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            color: #333;
+        }
+
+        .user-info p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #0078d7, #005a9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 120, 215, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* --- DESKTOP ICONS --- */
+        .desktop-container {
+            width: 100%;
+            height: calc(100% - var(--taskbar-height));
+            position: relative;
+            padding: 10px;
+            display: none; /* Hidden until login */
+        }
+
+        .icon-column-left {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .icon-corner-right {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            align-items: flex-end;
+        }
+
+        .app-icon {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            padding: 8px 5px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .app-icon:hover::after {
+            left: 100%;
+        }
+
+        .app-icon:hover { 
+            transform: scale(1.08) translateY(-5px); 
+            background: var(--bg-glass);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .app-icon i { 
+            font-size: 32px; 
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+
+        .app-icon span { 
+            font-size: 12px; 
+            font-weight: 600;
+            z-index: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            transform: translateY(10px);
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+        }
+
+        .app-icon:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Boje ikonica */
+        .c-discord { color: #5865F2; }
+        .c-github { color: #f0f6fc; }
+        .c-folder { color: #FFD43B; }
+        .c-user { color: #63E6BE; }
+        .c-social { color: #FF70A6; }
+        .c-paint { color: #FF6B6B; }
+        .c-notepad { color: #4ECDC4; }
+        .c-browser { color: #4285F4; }
+
+        /* --- WINDOW STYLES --- */
+        .window {
+            position: absolute;
+            background: var(--window-bg);
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: none;
+            flex-direction: column;
+            min-width: 300px;
+            min-height: 200px;
+            resize: both;
+            overflow: hidden;
+            animation: popUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            background: rgba(240, 240, 240, 0.95);
+        }
+
+        @keyframes popUp { 
+            0% { transform: scale(0.7); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+
+        .title-bar {
+            background: linear-gradient(to right, #e0e0e0, #f0f0f0);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            border-bottom: 1px solid #ccc;
+            font-weight: 600;
+            color: var(--text-dark);
+            user-select: none;
+        }
+
+        .window-content {
+            flex: 1;
+            overflow: auto;
+            background: white;
+            color: black;
+            user-select: text;
+            padding: 0;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .window-controls span {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: var(--transition);
+            font-weight: bold;
+        }
+        
+        .close-btn { 
+            background: #ff5f57; 
+            color: transparent; 
+            position: relative;
+        }
+        
+        .close-btn:hover { 
+            background: #e0443e; 
+        }
+        
+        .close-btn::after {
+            content: "×";
+            color: #400;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .min-btn { 
+            background: #ffbd2e; 
+            color: transparent;
+            position: relative;
+        }
+        
+        .min-btn:hover { 
+            background: #e0a626; 
+        }
+        
+        .min-btn::after {
+            content: "_";
+            color: #400;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .logout-btn { 
+            background: #5CD65C; 
+            color: transparent;
+            position: relative;
+        }
+        
+        .logout-btn:hover { 
+            background: #4EC54E; 
+        }
+        
+        .logout-btn::after {
+            content: "↶";
+            color: #400;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* --- REALISTIC BROWSER --- */
+        .browser-ui {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #fff;
+        }
+
+        .browser-tabs {
+            display: flex;
+            background: #f1f1f1;
+            border-bottom: 1px solid #ccc;
+            padding: 5px 5px 0 5px;
+            gap: 2px;
+        }
+
+        .browser-tab {
+            padding: 8px 15px;
+            background: #e8e8e8;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            max-width: 180px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .browser-tab.active {
+            background: white;
+            font-weight: 500;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+
+        .browser-tab:hover {
+            background: #f0f0f0;
+        }
+
+        .browser-tab .close-tab {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .browser-tab:hover .close-tab {
+            opacity: 1;
+        }
+
+        .browser-tab .close-tab:hover {
+            background: #ff5f57;
+            color: white;
+        }
+
+        .browser-navbar {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            align-items: center;
+        }
+
+        .browser-nav-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .browser-nav-btn:hover {
+            background: #f0f0f0;
+            border-color: #aaa;
+        }
+
+        .browser-address-bar {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .browser-address-bar:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.2);
+        }
+
+        .bookmarks-bar {
+            padding: 5px 10px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        .bookmark {
+            color: #444;
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .bookmark:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--accent);
+        }
+
+        .browser-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .browser-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .browser-new-tab {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 14px;
+            color: #666;
+            background: #fafafa;
+        }
+
+        /* --- ADVANCED PAINT --- */
+        .paint-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .paint-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 8px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ccc;
+            align-items: center;
+        }
+
+        .paint-tool {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .paint-tool:hover, .paint-tool.active {
+            background: #e8f4ff;
+            border-color: var(--accent);
+        }
+
+        .paint-colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin: 0 10px;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .paint-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .paint-color:hover, .paint-color.active {
+            transform: scale(1.2);
+            border-color: rgba(0,0,0,0.3);
+        }
+
+        .paint-main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .paint-canvas-container {
+            flex: 1;
+            overflow: auto;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #advanced-paint-canvas {
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .paint-status {
+            padding: 5px 10px;
+            background: #f0f0f0;
+            border-top: 1px solid #ccc;
+            font-size: 12px;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- ADVANCED NOTEPAD (TEXT EDITOR) --- */
+        .notepad-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .notepad-menu-bar {
+            display: flex;
+            background: #f0f0f0;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .notepad-menu-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .notepad-menu-item:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .notepad-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .notepad-tab {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+        }
+
+        .notepad-tab.active {
+            display: block;
+        }
+
+        .notepad-readonly {
+            background: #f9f9f9;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* --- ABOUT ME WINDOW (GitHub Profile) --- */
+        .github-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            background: linear-gradient(135deg, #0d1117, #161b22);
+            color: white;
+        }
+
+        .github-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 4px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #0d1117;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: #f0f6fc;
+        }
+
+        .github-name {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #f0f6fc;
+        }
+
+        .github-username {
+            font-size: 18px;
+            color: #8b949e;
+            margin-bottom: 30px;
+            background: #21262d;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: #238636;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .github-link:hover {
+            background: #2ea043;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(35, 134, 54, 0.3);
+        }
+
+        .github-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .github-stat {
+            text-align: center;
+        }
+
+        .github-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f0f6fc;
+        }
+
+        .github-stat-label {
+            font-size: 14px;
+            color: #8b949e;
+            margin-top: 5px;
+        }
+
+        /* --- SOCIALS WINDOW --- */
+        .socials-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 30px;
+            background: linear-gradient(135deg, #f9f9f9, #f0f0f0);
+        }
+
+        .socials-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .socials-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .social-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .social-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: var(--accent);
+        }
+
+        .social-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .social-card.instagram .social-icon { color: #E1306C; }
+        .social-card.email .social-icon { color: #4285F4; }
+        .social-card.discord .social-icon { color: #5865F2; }
+        .social-card.github .social-icon { color: #333; }
+
+        .social-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .social-value {
+            font-size: 14px;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .social-btn {
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .social-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* --- DISCORD WINDOW --- */
+        .discord-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            background: linear-gradient(135deg, #36393f, #2f3136);
+            color: white;
+            text-align: center;
+        }
+
+        .discord-icon {
+            font-size: 80px;
+            color: #5865F2;
+            margin-bottom: 20px;
+        }
+
+        .discord-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .discord-subtitle {
+            color: #b9bbbe;
+            margin-bottom: 30px;
+            font-size: 16px;
+            max-width: 400px;
+        }
+
+        .discord-invite-btn {
+            padding: 15px 30px;
+            background: #5865F2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .discord-invite-btn:hover {
+            background: #4752c4;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.3);
+        }
+
+        .discord-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #b9bbbe;
+        }
+
+        /* --- PROJECTS WINDOW WITH ANIMATIONS --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 25px;
+        }
+
+        .project-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            min-height: 280px;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #00bcd4);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-card:nth-child(1):hover { border-color: #0078d7; }
+        .project-card:nth-child(2):hover { border-color: #28a745; }
+
+        .project-icon {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover .project-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .project-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .project-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.4s ease;
+        }
+
+        .project-card:hover .project-title::after {
+            width: 100%;
+        }
+
+        .project-description {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            min-height: 80px;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .tech-tag {
+            background: rgba(0, 120, 215, 0.1);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .tech-tag {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease 0.1s;
+        }
+
+        .project-card:hover .project-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .project-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- CONTEXT MENU --- */
+        .context-menu {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            z-index: 10001;
+            min-width: 150px;
+            display: none;
+            flex-direction: column;
+            padding: 5px 0;
+        }
+
+        .context-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .context-item:hover {
+            background: rgba(0, 120, 215, 0.1);
+            color: var(--accent);
+        }
+
+        .context-divider {
+            height: 1px;
+            background: #eee;
+            margin: 5px 0;
+        }
+
+        /* --- START MENU --- */
+        #start-menu {
+            position: absolute;
+            bottom: var(--taskbar-height);
+            left: 0;
+            width: 350px;
+            height: 500px;
+            background: rgba(30, 30, 30, 0.97);
+            backdrop-filter: blur(20px);
+            color: white;
+            border-radius: 0 12px 12px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 9998;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .start-profile { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            padding: 20px; 
+            background: rgba(255,255,255,0.05); 
+            margin-bottom: 10px; 
+        }
+        
+        .start-profile img { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            border: 2px solid var(--accent); 
+            box-shadow: 0 0 10px rgba(0,120,215,0.3);
+        }
+        
+        .start-apps {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .start-item {
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        
+        .start-item:hover { 
+            background: rgba(255,255,255,0.1); 
+            transform: translateX(5px);
+        }
+
+        /* --- TASKBAR --- */
+        #taskbar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: var(--taskbar-height);
+            background: rgba(20, 20, 20, 0.98);
+            display: none; /* Hidden until login */
+            align-items: center;
+            padding: 0 15px;
+            z-index: 9999;
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .start-btn {
+            height: 35px;
+            width: 35px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        }
+        
+        .start-btn img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        .taskbar-apps { 
+            display: flex; 
+            gap: 8px; 
+            height: 100%;
+            align-items: center;
+        }
+        
+        .taskbar-icon {
+            width: 40px;
+            height: 40px;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .taskbar-icon:hover { 
+            background: rgba(255,255,255,0.15); 
+        }
+        
+        .taskbar-icon.active {
+            background: rgba(255,255,255,0.2);
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .taskbar-icon.active::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .clock-tray {
+            margin-left: auto;
+            color: white;
+            font-size: 13px;
+            text-align: center;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+        
+        .clock-tray:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .login-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+            
+            .icon-column-left { 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                justify-content: center;
+                position: static;
+                margin-bottom: 20px;
+            }
+            
+            .icon-corner-right { 
+                bottom: 70px; 
+                right: 10px; 
+            }
+            
+            .window {
+                width: 100% !important;
+                height: calc(100% - var(--taskbar-height)) !important;
+                top: 0 !important;
+                left: 0 !important;
+                border-radius: 0;
+            }
+            
+            #start-menu { 
+                width: 100%; 
+                height: 70vh;
+                border-radius: 12px 12px 0 0;
+                bottom: var(--taskbar-height);
+            }
+            
+            .browser-tabs {
+                overflow-x: auto;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                padding: 15px;
+                gap: 20px;
+            }
+            
+            .project-card {
+                padding: 20px;
+                min-height: 250px;
+            }
+            
+            .socials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-container">
+            <div class="login-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2 class="login-title">Welcome to Portfolio OS</h2>
+            <p class="login-subtitle">Please select a user to continue</p>
+            
+            <div class="user-list">
+                <div class="user-option selected" onclick="selectUser('guest')">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Guest</h4>
+                        <p>Limited access user</p>
+                    </div>
+                </div>
+                
+                <div class="user-option" onclick="selectUser('developer')">
+                    <div class="user-avatar">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Developer</h4>
+                        <p>Full access (coming soon)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="login-btn" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+            
+            <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                Currently only Guest account is available
+            </p>
+        </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop-container" id="desktop" oncontextmenu="showContextMenu(event, 'desktop'); return false;">
+        
+        <div class="icon-column-left">
+            <div class="app-icon" onclick="openWindow('projects')">
+                <i class="fas fa-folder-open c-folder"></i>
+                <span data-key="projects">Projects</span>
+                <div class="tooltip">My Projects (Double Click)</div>
+            </div>
+            <div class="app-icon" onclick="openWindow('about')">
+                <i class="fas fa-user-circle c-user"></i>
+                <span data-key="about">About Me</span>
+                <div class="tooltip">GitHub Profile</div>
+            </div>
+            <div class="app-icon" onclick="openWindow('socials')">
+                <i class="fas fa-share-alt c-social"></i>
+                <span data-key="socials">Socials</span>
+                <div class="tooltip">My Social Media Links</div>
+            </div>
+            <div class="app-icon" onclick="openWindow('browser')">
+                <i class="fab fa-chrome c-browser"></i>
+                <span>Browser</span>
+                <div class="tooltip">Chrome-like Web Browser</div>
+            </div>
+            <div class="app-icon" onclick="openWindow('paint')">
+                <i class="fas fa-paint-brush c-paint"></i>
+                <span>Paint Pro</span>
+                <div class="tooltip">Advanced Drawing Tool</div>
+            </div>
+        </div>
+
+        <div class="icon-corner-right">
+            <div class="app-icon" onclick="openWindow('discord')">
+                <i class="fab fa-discord c-discord"></i>
+                <span>Discord</span>
+                <div class="tooltip">Join My Discord Server</div>
+            </div>
+            <div class="app-icon" onclick="openLink('https://github.com/ilijxp')">
+                <i class="fab fa-github c-github"></i>
+                <span>GitHub</span>
+                <div class="tooltip">View My GitHub Profile</div>
+            </div>
+            <div class="app-icon" onclick="createNewTextFile()">
+                <i class="fas fa-file-alt c-notepad"></i>
+                <span>New Text File</span>
+                <div class="tooltip">Create New Editable Text File</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="context-menu"></div>
+
+    <!-- PROJECTS WINDOW -->
+    <div id="win-projects" class="window" style="top: 10%; left: 15%; width: 700px; height: 550px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-projects')">
+            <span data-key="projects">My Projects</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-projects')"></span>
+                <span class="close-btn" onclick="closeWindow('win-projects')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon" style="color: #0078d7;">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3 class="project-title">Portfolio OS</h3>
+                    <p class="project-description">A web-based operating system interface built with HTML5, CSS3, and vanilla JavaScript. Features realistic window management, apps, and a taskbar with full functionality.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">HTML5</span>
+                        <span class="tech-tag">CSS3</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">Canvas API</span>
+                        <span class="tech-tag">LocalStorage</span>
+                    </div>
+                    <a href="#" class="project-link" onclick="openWindow('browser')">
+                        <i class="fas fa-external-link-alt"></i> Live Demo
+                    </a>
+                    <div class="project-stats">
+                        <span class="project-stat"><i class="fas fa-code"></i> 2.5k lines</span>
+                        <span class="project-stat"><i class="far fa-calendar"></i> March 2024</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon" style="color: #28a745;">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <h3 class="project-title">Joe Travel</h3>
+                    <p class="project-description">A modern bus station website with real-time schedule updates, ticket booking system, and interactive maps. Built for seamless travel experience.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">HTML5</span>
+                        <span class="tech-tag">CSS3</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">Responsive</span>
+                        <span class="tech-tag">UX/UI</span>
+                    </div>
+                    <a href="https://ilijxp.github.io/joetravel/#pocetna" class="project-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Visit Website
+                    </a>
+                    <div class="project-stats">
+                        <span class="project-stat"><i class="fas fa-code"></i> 1.8k lines</span>
+                        <span class="project-stat"><i class="far fa-calendar"></i> February 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT ME WINDOW (GitHub Profile) -->
+    <div id="win-about" class="window" style="top: 15%; left: 20%; width: 500px; height: 500px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-about')">
+            <span data-key="about">About Me</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-about')"></span>
+                <span class="close-btn" onclick="closeWindow('win-about')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="github-profile">
+                <div class="github-avatar">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h2 class="github-name">ilijxp</h2>
+                <div class="github-username">@ilijxp</div>
+                <div class="github-stats">
+                    <div class="github-stat">
+                        <div class="github-stat-value">8</div>
+                        <div class="github-stat-label">Repositories</div>
+                    </div>
+                    <div class="github-stat">
+                        <div class="github-stat-value">24</div>
+                        <div class="github-stat-label">Commits</div>
+                    </div>
+                    <div class="github-stat">
+                        <div class="github-stat-value">3</div>
+                        <div class="github-stat-label">Projects</div>
+                    </div>
+                </div>
+                <a href="https://github.com/ilijxp" class="github-link" target="_blank">
+                    <i class="fab fa-github"></i> View GitHub Profile
+                </a>
+                <p style="margin-top: 30px; color: #8b949e; text-align: center; max-width: 400px;">
+                    Full-stack developer passionate about creating interactive web applications and user interfaces.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOCIALS WINDOW -->
+    <div id="win-socials" class="window" style="top: 20%; left: 25%; width: 500px; height: 400px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-socials')">
+            <span>Socials</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-socials')"></span>
+                <span class="close-btn" onclick="closeWindow('win-socials')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="socials-container">
+                <h3 class="socials-title">Connect With Me</h3>
+                <div class="socials-grid">
+                    <div class="social-card instagram" onclick="openLink('https://instagram.com/ilijxp')">
+                        <div class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <h4 class="social-name">Instagram</h4>
+                        <p class="social-value">@ilijxp</p>
+                        <button class="social-btn">Follow</button>
+                    </div>
+                    
+                    <div class="social-card email" onclick="copyToClipboard('ilijxpdev@gmail.com')">
+                        <div class="social-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4 class="social-name">Email</h4>
+                        <p class="social-value">ilijxpdev@gmail.com</p>
+                        <button class="social-btn">Copy Email</button>
+                    </div>
+                    
+                    <div class="social-card discord" onclick="openWindow('discord')">
+                        <div class="social-icon">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h4 class="social-name">Discord</h4>
+                        <p class="social-value">Join my server</p>
+                        <button class="social-btn">Join Server</button>
+                    </div>
+                    
+                    <div class="social-card github" onclick="openLink('https://github.com/ilijxp')">
+                        <div class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <h4 class="social-name">GitHub</h4>
+                        <p class="social-value">@ilijxp</p>
+                        <button class="social-btn">View Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DISCORD WINDOW -->
+    <div id="win-discord" class="window" style="top: 25%; left: 30%; width: 500px; height: 400px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-discord')">
+            <span>Discord Server</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-discord')"></span>
+                <span class="close-btn" onclick="closeWindow('win-discord')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="discord-container">
+                <i class="fab fa-discord discord-icon"></i>
+                <h2 class="discord-title">Join My Discord Community</h2>
+                <p class="discord-subtitle">
+                    Connect with other developers, share projects, get help, and collaborate on exciting new ideas.
+                </p>
+                
+                <button class="discord-invite-btn" onclick="openLink('https://discord.gg/4FKrGDEWjM')">
+                    <i class="fab fa-discord"></i> Join Discord Server
+                </button>
+                
+                <div class="discord-stats">
+                    <div>
+                        <div style="font-size: 18px; color: white;">50+</div>
+                        <div>Members</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 18px; color: white;">3</div>
+                        <div>Channels</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 18px; color: white;">24/7</div>
+                        <div>Active</div>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 30px; color: #b9bbbe; font-size: 14px;">
+                    Click the button above to join instantly!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADVANCED BROWSER -->
+    <div id="win-browser" class="window" style="top: 5%; left: 10%; width: 900px; height: 700px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-browser')" oncontextmenu="showContextMenu(event, 'browser'); return false;">
+            <span>Web Browser</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-browser')"></span>
+                <span class="close-btn" onclick="closeWindow('win-browser')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="browser-ui">
+                <div class="browser-tabs" id="browser-tabs">
+                    <div class="browser-tab active" data-tab="newtab" onclick="switchBrowserTab('newtab')">
+                        Google
+                        <span class="close-tab" onclick="closeBrowserTab('newtab', event)">×</span>
+                    </div>
+                </div>
+                <div class="browser-navbar">
+                    <button class="browser-nav-btn" onclick="browserGoBack()" title="Back"><i class="fas fa-arrow-left"></i></button>
+                    <button class="browser-nav-btn" onclick="browserGoForward()" title="Forward"><i class="fas fa-arrow-right"></i></button>
+                    <button class="browser-nav-btn" onclick="browserRefresh()" title="Refresh"><i class="fas fa-redo"></i></button>
+                    <input type="text" class="browser-address-bar" id="browser-address" placeholder="Search Google or type a URL" value="https://www.google.com" onkeypress="if(event.key==='Enter') browserNavigate()">
+                    <button class="browser-nav-btn" onclick="browserNavigate()" title="Go"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="bookmarks-bar">
+                    <span class="bookmark" onclick="browserQuickNav('https://www.google.com')">Google</span>
+                    <span class="bookmark" onclick="browserQuickNav('https://www.youtube.com')">YouTube</span>
+                    <span class="bookmark" onclick="browserQuickNav('https://github.com/ilijxp')">GitHub</span>
+                    <span class="bookmark" onclick="browserQuickNav('https://www.wikipedia.org')">Wikipedia</span>
+                    <span class="bookmark" onclick="browserQuickNav('https://www.reddit.com')">Reddit</span>
+                    <span class="bookmark" onclick="browserQuickNav('https://stackoverflow.com')">StackOverflow</span>
+                </div>
+                <div class="browser-content">
+                    <div class="browser-tab-content active" id="browser-tab-newtab">
+                        <iframe class="browser-iframe" src="https://www.google.com" id="browser-iframe-newtab"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADVANCED PAINT -->
+    <div id="win-paint" class="window" style="top: 5%; left: 5%; width: 700px; height: 550px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-paint')">
+            <span>Paint Pro</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-paint')"></span>
+                <span class="close-btn" onclick="closeWindow('win-paint')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="paint-container">
+                <div class="paint-toolbar">
+                    <div class="paint-tool active" onclick="selectPaintTool('brush')" title="Brush (B)">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="paint-tool" onclick="selectPaintTool('line')" title="Line (L)">
+                        <i class="fas fa-slash"></i>
+                    </div>
+                    <div class="paint-tool" onclick="selectPaintTool('rect')" title="Rectangle (R)">
+                        <i class="far fa-square"></i>
+                    </div>
+                    <div class="paint-tool" onclick="selectPaintTool('circle')" title="Circle (C)">
+                        <i class="far fa-circle"></i>
+                    </div>
+                    <div class="paint-tool" onclick="selectPaintTool('text')" title="Text (T)">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <div class="paint-tool" onclick="selectPaintTool('eraser')" title="Eraser (E)">
+                        <i class="fas fa-eraser"></i>
+                    </div>
+                    <div class="paint-tool" onclick="clearAdvancedCanvas()" title="Clear Canvas">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <div style="margin-left: 10px;">Color:</div>
+                    <div class="paint-colors" id="paint-color-palette">
+                        <!-- Colors populated by JS -->
+                    </div>
+                    <div style="margin-left: auto;">
+                        <button onclick="savePaint()" style="padding: 6px 12px; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+                <div class="paint-main">
+                    <div class="paint-canvas-container">
+                        <canvas id="advanced-paint-canvas" width="650" height="400"></canvas>
+                    </div>
+                </div>
+                <div class="paint-status">
+                    <span>Tool: <span id="paint-current-tool">Brush</span></span>
+                    <span>Size: <input type="range" id="paint-brush-size" min="1" max="50" value="3" onchange="updateBrushSize(this.value)" style="vertical-align: middle;"></span>
+                    <span id="paint-coords">X: 0, Y: 0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADVANCED NOTEPAD -->
+    <div id="win-notepad" class="window" style="top: 10%; left: 40%; width: 500px; height: 400px;">
+        <div class="title-bar" onmousedown="dragWindow(event, 'win-notepad')">
+            <span>Notepad</span>
+            <div class="window-controls">
+                <span class="logout-btn" onclick="logout()" title="Logout"></span>
+                <span class="min-btn" onclick="minWindow('win-notepad')"></span>
+                <span class="close-btn" onclick="closeWindow('win-notepad')"></span>
+            </div>
+        </div>
+        <div class="window-content">
+            <div class="notepad-container">
+                <div class="notepad-menu-bar">
+                    <div class="notepad-menu-item" onclick="createNewTextFile()">
+                        <i class="fas fa-file"></i> New
+                    </div>
+                    <div class="notepad-menu-item" onclick="saveTxt()">
+                        <i class="fas fa-save"></i> Save
+                    </div>
+                </div>
+                <div class="notepad-content">
+                    <textarea class="notepad-tab notepad-readonly active" id="notepad-file-1" readonly>
+Welcome to Portfolio OS Notepad!
+This is a read-only example file.
+You can create NEW files to edit them.
+Right-click for more options!
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- START MENU -->
+    <div id="start-menu">
+        <div class="start-profile">
+            <img src="https://ui-avatars.com/api/?name=Guest&background=0078d7&color=fff" alt="User">
+            <div>
+                <span style="font-weight: bold; font-size: 16px;">Guest</span><br>
+                <span style="font-size: 12px; opacity: 0.8;">Limited Access</span>
+            </div>
+        </div>
+        <div class="start-apps">
+            <div class="start-item" onclick="openWindow('projects')">
+                <i class="fas fa-folder c-folder"></i>
+                <span data-key="projects">Projects</span>
+            </div>
+            <div class="start-item" onclick="openWindow('about')">
+                <i class="fas fa-user c-user"></i>
+                <span data-key="about">About Me</span>
+            </div>
+            <div class="start-item" onclick="openWindow('browser')">
+                <i class="fab fa-chrome c-browser"></i>
+                <span>Browser</span>
+            </div>
+            <div class="start-item" onclick="openWindow('paint')">
+                <i class="fas fa-paint-brush c-paint"></i>
+                <span>Paint Pro</span>
+            </div>
+            <div class="start-item" onclick="openWindow('notepad')">
+                <i class="fas fa-file-alt c-notepad"></i>
+                <span>Notepad</span>
+            </div>
+            <div class="start-item" onclick="createNewTextFile()">
+                <i class="fas fa-plus-circle"></i>
+                <span>New Text File</span>
+            </div>
+            <div class="start-item" onclick="openLink('https://github.com/ilijxp')">
+                <i class="fab fa-github c-github"></i>
+                <span>GitHub</span>
+            </div>
+            <div class="start-item" onclick="openWindow('discord')">
+                <i class="fab fa-discord c-discord"></i>
+                <span>Discord</span>
+            </div>
+            <div class="start-item" onclick="openWindow('socials')">
+                <i class="fas fa-share-alt c-social"></i>
+                <span>Socials</span>
+            </div>
+        </div>
+        <div style="padding: 15px; background: rgba(255,255,255,0.05); margin-top: auto; display: flex; gap: 10px;">
+            <div class="start-item" onclick="logout()" style="flex: 1; text-align: center; background: rgba(255,255,255,0.1);">
+                <i class="fas fa-sign-out-alt" style="color: #ffa500;"></i>
+                <span>Logout</span>
+            </div>
+            <div class="start-item" onclick="shutdownOS()" style="flex: 1; text-align: center; background: rgba(255,255,255,0.1);">
+                <i class="fas fa-power-off" style="color: #ff6b6b;"></i>
+                <span data-key="shutdown">Shutdown</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASKBAR -->
+    <div id="taskbar">
+        <div class="start-btn" onclick="toggleStartMenu()">
+            <img src="content/logo.png" alt="W" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Windows_logo_-_2012_%28dark_blue%29.svg/1024px-Windows_logo_-_2012_%28dark_blue%29.svg.png'">
+        </div>
+        
+        <div class="taskbar-apps">
+            <div class="taskbar-icon" onclick="openWindow('browser')" title="Browser" id="taskbar-browser">
+                <i class="fab fa-chrome"></i>
+            </div>
+            <div class="taskbar-icon" onclick="openWindow('paint')" title="Paint" id="taskbar-paint">
+                <i class="fas fa-paint-brush"></i>
+            </div>
+            <div class="taskbar-icon" onclick="openWindow('discord')" title="Discord" id="taskbar-discord">
+                <i class="fab fa-discord"></i>
+            </div>
+            <div class="taskbar-icon" onclick="openWindow('notepad')" title="Notepad" id="taskbar-notepad">
+                <i class="fas fa-file-alt"></i>
+            </div>
+        </div>
+
+        <div class="clock-tray" id="clock" onclick="showContextMenu(event, 'clock')">
+            12:00 PM<br>1/1/2024
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        let highestZ = 10;
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let currentWindow = null;
+        let currentLang = 'en';
+        let textFileCounter = 1;
+        let paintHistory = [];
+        let selectedUser = 'guest';
+        let isLoggedIn = false;
+
+        // ========== LOGIN SYSTEM ==========
+        function selectUser(user) {
+            selectedUser = user;
+            document.querySelectorAll('.user-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function login() {
+            const loginScreen = document.getElementById('login-screen');
+            const desktop = document.getElementById('desktop');
+            const taskbar = document.getElementById('taskbar');
+            
+            // Animate login screen fade out
+            loginScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                loginScreen.style.display = 'none';
+                desktop.style.display = 'block';
+                taskbar.style.display = 'flex';
+                isLoggedIn = true;
+                
+                // Update start menu profile
+                const startProfile = document.querySelector('.start-profile img');
+                if (selectedUser === 'guest') {
+                    startProfile.src = 'https://ui-avatars.com/api/?name=Guest&background=0078d7&color=fff';
+                    document.querySelector('.start-profile span').textContent = 'Guest';
+                } else {
+                    startProfile.src = 'https://ui-avatars.com/api/?name=Developer&background=28a745&color=fff';
+                    document.querySelector('.start-profile span').textContent = 'Developer';
+                }
+                
+                // Show welcome notification
+                showNotification(`Welcome, ${selectedUser === 'guest' ? 'Guest' : 'Developer'}!`);
+            }, 500);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Close all windows
+                document.querySelectorAll('.window').forEach(win => {
+                    win.style.display = 'none';
+                });
+                
+                // Hide desktop and taskbar
+                document.getElementById('desktop').style.display = 'none';
+                document.getElementById('taskbar').style.display = 'none';
+                document.getElementById('start-menu').style.display = 'none';
+                
+                // Reset selected user
+                selectedUser = 'guest';
+                document.querySelectorAll('.user-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                document.querySelector('.user-option').classList.add('selected');
+                
+                // Show login screen
+                const loginScreen = document.getElementById('login-screen');
+                loginScreen.style.display = 'flex';
+                setTimeout(() => {
+                    loginScreen.style.opacity = '1';
+                }, 50);
+                
+                isLoggedIn = false;
+            }
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.background = 'rgba(0, 120, 215, 0.9)';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 20px';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            notification.style.zIndex = '10001';
+            notification.style.transform = 'translateX(100px)';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.3s ease';
+            notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+                notification.style.opacity = '1';
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100px)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ========== WINDOW MANAGEMENT ==========
+        function openWindow(appId) {
+            if (!isLoggedIn) return;
+            
+            const win = document.getElementById('win-' + appId);
+            if(win) {
+                win.style.display = 'flex';
+                win.style.zIndex = ++highestZ;
+                document.getElementById('start-menu').style.display = 'none';
+                
+                // Update taskbar icon state
+                const taskbarIcon = document.getElementById('taskbar-' + appId);
+                if(taskbarIcon) {
+                    taskbarIcon.classList.add('active');
+                }
+                
+                // Special initialization for certain apps
+                if(appId === 'paint') initPaint();
+                if(appId === 'browser') initBrowser();
+            }
+        }
+
+        function closeWindow(appId) {
+            const win = document.getElementById(appId);
+            if(win) {
+                win.style.display = 'none';
+                
+                // Update taskbar icon state
+                const appName = appId.replace('win-', '');
+                const taskbarIcon = document.getElementById('taskbar-' + appName);
+                if(taskbarIcon) {
+                    taskbarIcon.classList.remove('active');
+                }
+            }
+        }
+
+        function minWindow(appId) {
+            const win = document.getElementById(appId);
+            win.style.display = 'none';
+            
+            // Update taskbar icon state
+            const appName = appId.replace('win-', '');
+            const taskbarIcon = document.getElementById('taskbar-' + appName);
+            if(taskbarIcon) {
+                taskbarIcon.classList.remove('active');
+            }
+        }
+
+        function openLink(url) {
+            if (!isLoggedIn) return;
+            window.open(url, '_blank');
+        }
+
+        function toggleStartMenu() {
+            if (!isLoggedIn) return;
+            
+            const menu = document.getElementById('start-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            menu.style.zIndex = ++highestZ;
+        }
+
+        document.getElementById('desktop').addEventListener('click', (e) => {
+            if(e.target === document.getElementById('desktop')) {
+                document.getElementById('start-menu').style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.window').forEach(win => {
+            win.addEventListener('mousedown', () => {
+                win.style.zIndex = ++highestZ;
+            });
+        });
+
+        // ========== DRAGGING LOGIC ==========
+        function dragWindow(e, winId) {
+            e.preventDefault();
+            isDragging = true;
+            currentWindow = document.getElementById(winId);
+            const rect = currentWindow.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            
+            currentWindow.style.zIndex = ++highestZ;
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+
+        function onMouseMove(e) {
+            if (!isDragging || !currentWindow) return;
+            let x = e.clientX - dragOffsetX;
+            let y = e.clientY - dragOffsetY;
+            
+            // Keep within bounds
+            const maxX = window.innerWidth - currentWindow.offsetWidth;
+            const maxY = window.innerHeight - currentWindow.offsetHeight;
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            currentWindow.style.left = x + 'px';
+            currentWindow.style.top = y + 'px';
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            currentWindow = null;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        // ========== CONTEXT MENU SYSTEM ==========
+        function showContextMenu(e, context) {
+            e.preventDefault();
+            const menu = document.getElementById('context-menu');
+            menu.innerHTML = '';
+            
+            // Common items
+            const refreshItem = document.createElement('div');
+            refreshItem.className = 'context-item';
+            refreshItem.innerHTML = '<i class="fas fa-redo"></i> Refresh';
+            refreshItem.onclick = () => {
+                if(context === 'desktop') location.reload();
+                if(context === 'browser') browserRefresh();
+                hideContextMenu();
+            };
+            menu.appendChild(refreshItem);
+            
+            if(context === 'desktop') {
+                const newFileItem = document.createElement('div');
+                newFileItem.className = 'context-item';
+                newFileItem.innerHTML = '<i class="fas fa-file-alt"></i> New Text File';
+                newFileItem.onclick = () => { createNewTextFile(); hideContextMenu(); };
+                menu.appendChild(newFileItem);
+                
+                const separator = document.createElement('div');
+                separator.className = 'context-divider';
+                menu.appendChild(separator);
+                
+                const viewItem = document.createElement('div');
+                viewItem.className = 'context-item';
+                viewItem.innerHTML = '<i class="fas fa-th-large"></i> View';
+                menu.appendChild(viewItem);
+                
+                const sortItem = document.createElement('div');
+                sortItem.className = 'context-item';
+                sortItem.innerHTML = '<i class="fas fa-sort-alpha-down"></i> Sort By';
+                menu.appendChild(sortItem);
+            }
+            
+            if(context === 'browser') {
+                const newTabItem = document.createElement('div');
+                newTabItem.className = 'context-item';
+                newTabItem.innerHTML = '<i class="fas fa-plus"></i> New Tab';
+                newTabItem.onclick = () => { addBrowserTab(); hideContextMenu(); };
+                menu.appendChild(newTabItem);
+            }
+            
+            if(context === 'clock') {
+                const dateItem = document.createElement('div');
+                dateItem.className = 'context-item';
+                dateItem.innerHTML = `<i class="far fa-calendar"></i> ${new Date().toLocaleDateString()}`;
+                menu.appendChild(dateItem);
+                
+                const timeItem = document.createElement('div');
+                timeItem.className = 'context-item';
+                timeItem.innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleTimeString()}`;
+                menu.appendChild(timeItem);
+            }
+            
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            menu.style.display = 'flex';
+            menu.style.zIndex = 10001;
+        }
+
+        function hideContextMenu() {
+            document.getElementById('context-menu').style.display = 'none';
+        }
+
+        document.addEventListener('click', hideContextMenu);
+
+        // ========== TEXT FILE SYSTEM ==========
+        function createNewTextFile() {
+            if (!isLoggedIn) return;
+            
+            textFileCounter++;
+            const notepadContent = document.querySelector('.notepad-content');
+            
+            // Create new textarea
+            const newTextarea = document.createElement('textarea');
+            newTextarea.className = 'notepad-tab active';
+            newTextarea.id = `notepad-file-${textFileCounter}`;
+            newTextarea.placeholder = 'Type here... You can edit this new file!';
+            
+            // Hide other tabs
+            document.querySelectorAll('.notepad-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            notepadContent.appendChild(newTextarea);
+            
+            // Update window title
+            const notepadTitle = document.querySelector('#win-notepad .title-bar span');
+            notepadTitle.textContent = `Notepad - New File ${textFileCounter}`;
+            
+            // Open notepad window
+            openWindow('notepad');
+            
+            // Focus the new textarea
+            setTimeout(() => newTextarea.focus(), 100);
+        }
+
+        // ========== ADVANCED BROWSER ==========
+        let browserTabs = ['newtab'];
+        let currentBrowserTab = 'newtab';
+        let browserHistory = { newtab: ['https://www.google.com'] };
+        let browserHistoryIndex = { newtab: 0 };
+
+        function initBrowser() {
+            // Initialize color palette for paint if needed
+            if(!document.getElementById('paint-color-palette').innerHTML) {
+                initPaintColors();
+            }
+            
+            // Load default tab
+            switchBrowserTab('newtab');
+        }
+
+        function addBrowserTab() {
+            const tabId = 'tab' + Date.now();
+            browserTabs.push(tabId);
+            browserHistory[tabId] = ['https://www.google.com'];
+            browserHistoryIndex[tabId] = 0;
+            
+            // Create tab element
+            const tabElement = document.createElement('div');
+            tabElement.className = 'browser-tab';
+            tabElement.dataset.tab = tabId;
+            tabElement.innerHTML = `New Tab <span class="close-tab" onclick="closeBrowserTab('${tabId}', event)">×</span>`;
+            tabElement.onclick = () => switchBrowserTab(tabId);
+            
+            document.getElementById('browser-tabs').appendChild(tabElement);
+            
+            // Create content area with iframe
+            const contentElement = document.createElement('div');
+            contentElement.className = 'browser-tab-content';
+            contentElement.id = `browser-tab-${tabId}`;
+            contentElement.innerHTML = `<iframe class="browser-iframe" src="https://www.google.com" id="browser-iframe-${tabId}" allow="fullscreen"></iframe>`;
+            
+            document.querySelector('.browser-content').appendChild(contentElement);
+            
+            // Switch to new tab
+            switchBrowserTab(tabId);
+        }
+
+        function switchBrowserTab(tabId) {
+            // Update tab UI
+            document.querySelectorAll('.browser-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.browser-tab[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Update content UI
+            document.querySelectorAll('.browser-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`browser-tab-${tabId}`).classList.add('active');
+            
+            currentBrowserTab = tabId;
+            
+            // Update address bar
+            if(browserHistory[tabId] && browserHistory[tabId].length > 0) {
+                const currentUrl = browserHistory[tabId][browserHistoryIndex[tabId]];
+                if(currentUrl) {
+                    document.getElementById('browser-address').value = currentUrl;
+                }
+            }
+        }
+
+        function closeBrowserTab(tabId, event) {
+            if(event) event.stopPropagation();
+            
+            if(browserTabs.length <= 1) return; // Don't close the last tab
+            
+            // Remove tab
+            browserTabs = browserTabs.filter(id => id !== tabId);
+            document.querySelector(`.browser-tab[data-tab="${tabId}"]`).remove();
+            document.getElementById(`browser-tab-${tabId}`).remove();
+            
+            // Switch to another tab
+            switchBrowserTab(browserTabs[0]);
+            
+            // Cleanup
+            delete browserHistory[tabId];
+            delete browserHistoryIndex[tabId];
+        }
+
+        function browserNavigate() {
+            let url = document.getElementById('browser-address').value;
+            
+            // Add https:// if not present
+            if(!url.startsWith('http://') && !url.startsWith('https://')) {
+                if(url.includes('.')) {
+                    url = 'https://' + url;
+                } else {
+                    url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+                }
+            }
+            
+            // Add to history
+            if(!browserHistory[currentBrowserTab]) {
+                browserHistory[currentBrowserTab] = [];
+                browserHistoryIndex[currentBrowserTab] = -1;
+            }
+            
+            browserHistory[currentBrowserTab].push(url);
+            browserHistoryIndex[currentBrowserTab] = browserHistory[currentBrowserTab].length - 1;
+            
+            // Update iframe
+            const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
+            if(iframe) {
+                iframe.src = url;
+            } else {
+                // For the default newtab
+                const defaultIframe = document.getElementById('browser-iframe-newtab');
+                if(defaultIframe) {
+                    defaultIframe.src = url;
+                }
+            }
+            
+            // Update tab title
+            const tabElement = document.querySelector(`.browser-tab[data-tab="${currentBrowserTab}"]`);
+            try {
+                const domain = new URL(url).hostname.replace('www.', '');
+                tabElement.textContent = domain.substring(0, 15) + (domain.length > 15 ? '...' : '');
+                tabElement.innerHTML += `<span class="close-tab" onclick="closeBrowserTab('${currentBrowserTab}', event)">×</span>`;
+            } catch(e) {
+                tabElement.textContent = 'Loading...';
+                tabElement.innerHTML += `<span class="close-tab" onclick="closeBrowserTab('${currentBrowserTab}', event)">×</span>`;
+            }
+        }
+
+        function browserQuickNav(url) {
+            document.getElementById('browser-address').value = url;
+            browserNavigate();
+        }
+
+        function browserGoBack() {
+            if(browserHistoryIndex[currentBrowserTab] > 0) {
+                browserHistoryIndex[currentBrowserTab]--;
+                const url = browserHistory[currentBrowserTab][browserHistoryIndex[currentBrowserTab]];
+                document.getElementById('browser-address').value = url;
+                
+                const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
+                if(iframe) {
+                    iframe.src = url;
+                } else {
+                    const defaultIframe = document.getElementById('browser-iframe-newtab');
+                    if(defaultIframe) {
+                        defaultIframe.src = url;
+                    }
+                }
+            }
+        }
+
+        function browserGoForward() {
+            if(browserHistoryIndex[currentBrowserTab] < browserHistory[currentBrowserTab].length - 1) {
+                browserHistoryIndex[currentBrowserTab]++;
+                const url = browserHistory[currentBrowserTab][browserHistoryIndex[currentBrowserTab]];
+                document.getElementById('browser-address').value = url;
+                
+                const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
+                if(iframe) {
+                    iframe.src = url;
+                } else {
+                    const defaultIframe = document.getElementById('browser-iframe-newtab');
+                    if(defaultIframe) {
+                        defaultIframe.src = url;
+                    }
+                }
+            }
+        }
+
+        function browserRefresh() {
+            const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
+            if(iframe) {
+                iframe.src = iframe.src;
+            } else {
+                const defaultIframe = document.getElementById('browser-iframe-newtab');
+                if(defaultIframe) {
+                    defaultIframe.src = defaultIframe.src;
+                }
+            }
+        }
+
+        // ========== ADVANCED PAINT ==========
+        let paintCtx;
+        let painting = false;
+        let paintTool = 'brush';
+        let paintColor = '#000000';
+        let brushSize = 3;
+        let startX, startY;
+        let snapshot;
+
+        function initPaint() {
+            const canvas = document.getElementById('advanced-paint-canvas');
+            paintCtx = canvas.getContext('2d');
+            
+            // Set initial styles
+            paintCtx.lineWidth = brushSize;
+            paintCtx.lineCap = 'round';
+            paintCtx.lineJoin = 'round';
+            
+            // Initialize color palette
+            if(!document.getElementById('paint-color-palette').innerHTML) {
+                initPaintColors();
+            }
+            
+            // Event listeners
+            canvas.addEventListener('mousedown', startPaint);
+            canvas.addEventListener('mousemove', paintDraw);
+            canvas.addEventListener('mouseup', stopPaint);
+            canvas.addEventListener('mouseout', stopPaint);
+            
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+            
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup');
+                canvas.dispatchEvent(mouseEvent);
+            });
+            
+            // Update coordinates display
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = Math.round(e.clientX - rect.left);
+                const y = Math.round(e.clientY - rect.top);
+                document.getElementById('paint-coords').textContent = `X: ${x}, Y: ${y}`;
+            });
+        }
+
+        function initPaintColors() {
+            const colors = [
+                '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
+                '#FFFF00', '#FF00FF', '#00FFFF', '#FF6B6B', '#4ECDC4',
+                '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8',
+                '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'
+            ];
+            
+            const palette = document.getElementById('paint-color-palette');
+            palette.innerHTML = '';
+            
+            colors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'paint-color';
+                colorDiv.style.backgroundColor = color;
+                colorDiv.dataset.color = color;
+                colorDiv.onclick = () => selectPaintColor(color);
+                if(color === '#000000') colorDiv.classList.add('active');
+                palette.appendChild(colorDiv);
+            });
+        }
+
+        function selectPaintTool(tool) {
+            paintTool = tool;
+            document.getElementById('paint-current-tool').textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+            
+            // Update UI
+            document.querySelectorAll('.paint-tool').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        function selectPaintColor(color) {
+            paintColor = color;
+            document.querySelectorAll('.paint-color').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        function updateBrushSize(size) {
+            brushSize = parseInt(size);
+            paintCtx.lineWidth = brushSize;
+        }
+
+        function startPaint(e) {
+            painting = true;
+            const canvas = document.getElementById('advanced-paint-canvas');
+            startX = e.offsetX;
+            startY = e.offsetY;
+            
+            // Save snapshot for some tools
+            if(paintTool !== 'brush' && paintTool !== 'eraser') {
+                snapshot = paintCtx.getImageData(0, 0, canvas.width, canvas.height);
+            }
+            
+            paintCtx.beginPath();
+            paintCtx.moveTo(startX, startY);
+            
+            // For brush and eraser, start drawing immediately
+            if(paintTool === 'brush' || paintTool === 'eraser') {
+                paintDraw(e);
+            }
+        }
+
+        function paintDraw(e) {
+            if(!painting) return;
+            
+            const canvas = document.getElementById('advanced-paint-canvas');
+            const x = e.offsetX;
+            const y = e.offsetY;
+            
+            paintCtx.strokeStyle = paintTool === 'eraser' ? '#FFFFFF' : paintColor;
+            
+            if(paintTool === 'brush' || paintTool === 'eraser') {
+                paintCtx.lineTo(x, y);
+                paintCtx.stroke();
+            } else {
+                // Restore snapshot for shape tools
+                paintCtx.putImageData(snapshot, 0, 0);
+                
+                if(paintTool === 'line') {
+                    paintCtx.beginPath();
+                    paintCtx.moveTo(startX, startY);
+                    paintCtx.lineTo(x, y);
+                    paintCtx.stroke();
+                } else if(paintTool === 'rect') {
+                    const width = x - startX;
+                    const height = y - startY;
+                    paintCtx.strokeRect(startX, startY, width, height);
+                } else if(paintTool === 'circle') {
+                    const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+                    paintCtx.beginPath();
+                    paintCtx.arc(startX, startY, radius, 0, 2 * Math.PI);
+                    paintCtx.stroke();
+                } else if(paintTool === 'text') {
+                    const text = prompt('Enter text:', 'Hello');
+                    if(text) {
+                        paintCtx.font = `${brushSize * 5}px Arial`;
+                        paintCtx.fillStyle = paintColor;
+                        paintCtx.fillText(text, startX, startY);
+                    }
+                }
+            }
+        }
+
+        function stopPaint() {
+            painting = false;
+            paintCtx.beginPath();
+            
+            // Save to history for undo
+            const canvas = document.getElementById('advanced-paint-canvas');
+            paintHistory.push(paintCtx.getImageData(0, 0, canvas.width, canvas.height));
+            if(paintHistory.length > 20) paintHistory.shift(); // Limit history
+        }
+
+        function clearAdvancedCanvas() {
+            const canvas = document.getElementById('advanced-paint-canvas');
+            paintCtx.clearRect(0, 0, canvas.width, canvas.height);
+            paintHistory = [];
+        }
+
+        function savePaint() {
+            const canvas = document.getElementById('advanced-paint-canvas');
+            const link = document.createElement('a');
+            link.download = 'my-painting.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // ========== CLOCK ==========
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerHTML = 
+                now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + '<br>' + 
+                now.toLocaleDateString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ========== NOTEPAD SAVE ==========
+        function saveTxt() {
+            const activeTextarea = document.querySelector('.notepad-tab.active');
+            if(!activeTextarea) return;
+            
+            const text = activeTextarea.value;
+            const blob = new Blob([text], { type: "text/plain"});
+            const anchor = document.createElement("a");
+            anchor.href = URL.createObjectURL(blob);
+            anchor.download = "note.txt";
+            anchor.click();
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard: ' + text);
+            });
+        }
+
+        function shutdownOS() {
+            if(confirm('Shut down Portfolio OS?')) {
+                document.body.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; color: white; font-family: monospace; font-size: 24px;">
+                        <div style="text-align: center;">
+                            <div style="margin-bottom: 20px;">Portfolio OS</div>
+                            <div style="font-size: 16px;">Shutting down...</div>
+                            <div style="font-size: 12px; margin-top: 40px; color: #aaa;">Press F5 to restart</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== INITIALIZATION ==========
+        initPaintColors();
+        
+        // Make desktop icons draggable
+        document.querySelectorAll('.app-icon').forEach(icon => {
+            icon.setAttribute('draggable', 'true');
+            icon.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', 'icon');
+            });
+        });
+        
+        console.log('Portfolio OS Pro v2.0 loaded successfully!');
+    </script>
+</body>
+</html>
