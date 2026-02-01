@@ -1,25 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio OS Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- CSS VARIJABLE I GLOBALNI STILOVI --- */
-        :root {
-            --primary-color: #0078d7;
-            --taskbar-height: 45px;
-            --bg-glass: rgba(255, 255, 255, 0.15);
-            --window-bg: #f0f0f0;
-            --accent: #0078d7;
-            --accent-hover: #005a9e;
-            --text-dark: #222;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
+        /* --- WINDOWS XP CURSOR & GLOBAL STYLES --- */
         * { 
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="white" stroke="black" stroke-width="2"/><circle cx="10" cy="10" r="2" fill="black"/></svg>') 16 16, auto;
             box-sizing: border-box; 
             user-select: none;
             margin: 0;
@@ -33,138 +22,129 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: url('content/wallpaper.png') no-repeat center center fixed;
             background-size: cover;
-            background-color: #2c3e50;
+            background-color: #0078d7;
             position: relative;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- LOGIN SCREEN --- */
-        #login-screen {
+        /* --- WINDOWS 10 BLUE THEME --- */
+        :root {
+            --primary-color: #0078d7;
+            --primary-light: #50a6ff;
+            --primary-dark: #005a9e;
+            --taskbar-height: 48px;
+            --bg-glass: rgba(255, 255, 255, 0.25);
+            --window-bg: #f0f0f0;
+            --accent: #0078d7;
+            --accent-hover: #106ebe;
+            --text-dark: #1a1a1a;
+            --text-light: #f0f0f0;
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius: 8px;
+            --taskbar-blur: blur(30px);
+        }
+
+        /* --- ENHANCED ANIMATIONS --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(0, 120, 215, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 120, 215, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(0, 120, 215, 0.5); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- SHUTDOWN SCREEN --- */
+        #shutdown-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a2980, #26d0ce);
-            display: flex;
+            background: linear-gradient(135deg, #001f3f 0%, #003366 50%, #001a33 100%);
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease;
+            z-index: 20000;
+            flex-direction: column;
+            color: white;
         }
 
-        .login-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            padding: 40px;
-            width: 400px;
+        .shutdown-logo {
+            font-size: 120px;
+            margin-bottom: 40px;
+            animation: pulse 2s infinite;
+            color: var(--primary-light);
+        }
+
+        .shutdown-text {
+            font-size: 32px;
+            margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.8s ease;
+            animation: fadeIn 2s ease-in-out infinite alternate;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .shutdown-subtext {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.5;
         }
 
-        .login-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #0078d7, #005a9e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 40px;
+        .shutdown-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 40px;
+            border-radius: 2px;
+            overflow: hidden;
         }
 
-        .login-title {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .login-subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .user-list {
-            margin: 20px 0;
-        }
-
-        .user-option {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            margin: 10px 0;
-            background: #f5f5f5;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .user-option:hover {
-            background: #e8f4ff;
-            border-color: var(--accent);
-            transform: translateX(5px);
-        }
-
-        .user-option.selected {
-            background: #e8f4ff;
-            border-color: var(--accent);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0078d7, #005a9e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            margin-right: 15px;
-        }
-
-        .user-info h4 {
-            margin: 0;
-            color: #333;
-        }
-
-        .user-info p {
-            margin: 5px 0 0;
-            font-size: 12px;
-            color: #666;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #0078d7, #005a9e);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 20px;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 120, 215, 0.3);
-        }
-
-        .login-btn:active {
-            transform: translateY(-1px);
+        .shutdown-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            transition: width 3s ease-in-out;
         }
 
         /* --- DESKTOP ICONS --- */
@@ -172,23 +152,23 @@
             width: 100%;
             height: calc(100% - var(--taskbar-height));
             position: relative;
-            padding: 10px;
-            display: none; /* Hidden until login */
+            padding: 20px;
+            display: block;
         }
 
         .icon-column-left {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
         }
 
         .icon-corner-right {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
             position: absolute;
             bottom: 20px;
             right: 20px;
@@ -196,19 +176,46 @@
         }
 
         .app-icon {
-            width: 80px;
+            width: 90px;
             display: flex;
             flex-direction: column;
             align-items: center;
             color: white;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
             cursor: pointer;
             transition: var(--transition);
             text-align: center;
-            padding: 8px 5px;
-            border-radius: 8px;
+            padding: 12px 8px;
+            border-radius: var(--border-radius);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(5px);
+            background: var(--bg-glass);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 0.5s ease;
+            animation-fill-mode: both;
+        }
+
+        .app-icon:nth-child(1) { animation-delay: 0.1s; }
+        .app-icon:nth-child(2) { animation-delay: 0.2s; }
+        .app-icon:nth-child(3) { animation-delay: 0.3s; }
+        .app-icon:nth-child(4) { animation-delay: 0.4s; }
+        .app-icon:nth-child(5) { animation-delay: 0.5s; }
+
+        .app-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .app-icon:hover::before {
+            opacity: 1;
         }
 
         .app-icon::after {
@@ -218,7 +225,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             transition: left 0.7s ease;
         }
 
@@ -226,46 +233,68 @@
             left: 100%;
         }
 
+        .app-icon.dragging {
+            opacity: 0.8;
+            transform: scale(1.1);
+            z-index: 9999;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
         .app-icon:hover { 
-            transform: scale(1.08) translateY(-5px); 
-            background: var(--bg-glass);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: translateY(-8px) scale(1.05); 
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.4);
         }
 
         .app-icon i { 
-            font-size: 32px; 
-            margin-bottom: 5px;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+            font-size: 36px; 
+            margin-bottom: 8px;
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+            transition: var(--transition);
+        }
+
+        .app-icon:hover i {
+            transform: scale(1.2) rotate(5deg);
         }
 
         .app-icon span { 
-            font-size: 12px; 
+            font-size: 13px; 
             font-weight: 600;
             z-index: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+
+        .app-icon:hover span {
+            background: rgba(0,0,0,0.5);
         }
 
         .tooltip {
             position: absolute;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 13px;
             white-space: nowrap;
             z-index: 10000;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.2s, transform 0.2s;
             transform: translateY(10px);
-            top: -40px;
+            top: -45px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
         }
 
         .tooltip::after {
@@ -273,10 +302,10 @@
             position: absolute;
             top: 100%;
             left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
+            margin-left: -6px;
+            border-width: 6px;
             border-style: solid;
-            border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+            border-color: rgba(0,0,0,0.9) transparent transparent transparent;
         }
 
         .app-icon:hover .tooltip {
@@ -299,35 +328,41 @@
             position: absolute;
             background: var(--window-bg);
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: var(--shadow);
             display: none;
             flex-direction: column;
-            min-width: 300px;
-            min-height: 200px;
+            min-width: 350px;
+            min-height: 250px;
             resize: both;
             overflow: hidden;
-            animation: popUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
-            background: rgba(240, 240, 240, 0.95);
+            animation: bounceIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        @keyframes popUp { 
-            0% { transform: scale(0.7); opacity: 0; } 
-            100% { transform: scale(1); opacity: 1; } 
+        .window.maximized {
+            width: 100% !important;
+            height: calc(100% - var(--taskbar-height)) !important;
+            top: 0 !important;
+            left: 0 !important;
+            border-radius: 0;
+            resize: none;
         }
 
         .title-bar {
-            background: linear-gradient(to right, #e0e0e0, #f0f0f0);
-            padding: 8px 12px;
+            background: linear-gradient(to right, #0078d7, #106ebe);
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: move;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
             font-weight: 600;
-            color: var(--text-dark);
+            color: white;
             user-select: none;
+            font-size: 15px;
         }
 
         .window-content {
@@ -341,93 +376,97 @@
 
         .window-controls {
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
 
         .window-controls span {
             display: inline-block;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             text-align: center;
-            line-height: 25px;
+            line-height: 30px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: var(--transition);
             font-weight: bold;
-        }
-        
-        .close-btn { 
-            background: #ff5f57; 
-            color: transparent; 
-            position: relative;
+            color: white;
+            background: rgba(255,255,255,0.2);
         }
         
         .close-btn:hover { 
-            background: #e0443e; 
-        }
-        
-        .close-btn::after {
-            content: "×";
-            color: #400;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        
-        .min-btn { 
-            background: #ffbd2e; 
-            color: transparent;
-            position: relative;
+            background: #e81123; 
+            transform: rotate(90deg);
         }
         
         .min-btn:hover { 
-            background: #e0a626; 
-        }
-        
-        .min-btn::after {
-            content: "_";
-            color: #400;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
         }
 
-        .logout-btn { 
-            background: #5CD65C; 
-            color: transparent;
-            position: relative;
+        .max-btn:hover { 
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
         }
         
         .logout-btn:hover { 
-            background: #4EC54E; 
+            background: rgba(255,255,255,0.3);
+            transform: rotate(180deg);
         }
-        
-        .logout-btn::after {
-            content: "↶";
-            color: #400;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+
+        /* --- ABOUT ME WINDOW (Load o-meni.html file) --- */
+        .about-content {
             height: 100%;
+            overflow: auto;
+            padding: 20px;
+            background: white;
+        }
+
+        .about-loading {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .about-loading i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--accent);
+            animation: spin 2s linear infinite;
+        }
+
+        .about-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .about-error i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+
+        .about-error h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .about-error p {
             font-size: 16px;
-            font-weight: bold;
+            color: #666;
+            max-width: 400px;
+            line-height: 1.5;
         }
 
         /* --- REALISTIC BROWSER --- */
@@ -444,28 +483,32 @@
             border-bottom: 1px solid #ccc;
             padding: 5px 5px 0 5px;
             gap: 2px;
+            overflow-x: auto;
         }
 
         .browser-tab {
-            padding: 8px 15px;
+            padding: 10px 20px;
             background: #e8e8e8;
             border: 1px solid #ccc;
             border-bottom: none;
-            border-radius: 6px 6px 0 0;
+            border-radius: 8px 8px 0 0;
             cursor: pointer;
-            font-size: 13px;
-            max-width: 180px;
+            font-size: 14px;
+            max-width: 200px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
             transition: var(--transition);
             position: relative;
+            flex-shrink: 0;
         }
 
         .browser-tab.active {
             background: white;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            border-color: var(--accent);
+            border-bottom: 2px solid var(--accent);
         }
 
         .browser-tab:hover {
@@ -477,14 +520,14 @@
             right: 5px;
             top: 50%;
             transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #ccc;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 11px;
             opacity: 0;
             transition: var(--transition);
         }
@@ -500,17 +543,18 @@
 
         .browser-navbar {
             display: flex;
-            gap: 8px;
-            padding: 10px;
+            gap: 10px;
+            padding: 12px;
             background: #f8f8f8;
             border-bottom: 1px solid #ddd;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .browser-nav-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 4px;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
             border: 1px solid #ccc;
             background: white;
             display: flex;
@@ -523,44 +567,50 @@
         .browser-nav-btn:hover {
             background: #f0f0f0;
             border-color: #aaa;
+            transform: translateY(-2px);
         }
 
         .browser-address-bar {
             flex: 1;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border: 1px solid #ccc;
-            border-radius: 20px;
-            font-size: 14px;
+            border-radius: 25px;
+            font-size: 15px;
             background: white;
             outline: none;
             transition: var(--transition);
+            min-width: 200px;
         }
 
         .browser-address-bar:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.2);
+            box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
         }
 
         .bookmarks-bar {
-            padding: 5px 10px;
+            padding: 8px 12px;
             background: #f8f8f8;
             border-bottom: 1px solid #ddd;
             display: flex;
-            gap: 15px;
-            font-size: 12px;
+            gap: 20px;
+            font-size: 13px;
+            overflow-x: auto;
         }
 
         .bookmark {
             color: #444;
             cursor: pointer;
-            padding: 2px 5px;
-            border-radius: 3px;
+            padding: 4px 8px;
+            border-radius: 4px;
             transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .bookmark:hover {
             background: rgba(0,0,0,0.05);
             color: var(--accent);
+            transform: translateY(-2px);
         }
 
         .browser-content {
@@ -581,9 +631,11 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            font-size: 14px;
+            font-size: 16px;
             color: #666;
             background: #fafafa;
+            flex-direction: column;
+            gap: 20px;
         }
 
         /* --- ADVANCED PAINT --- */
@@ -596,18 +648,18 @@
         .paint-toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            padding: 8px;
+            gap: 8px;
+            padding: 10px;
             background: #f8f8f8;
             border-bottom: 1px solid #ccc;
             align-items: center;
         }
 
         .paint-tool {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 6px;
             background: white;
             cursor: pointer;
             display: flex;
@@ -619,22 +671,23 @@
         .paint-tool:hover, .paint-tool.active {
             background: #e8f4ff;
             border-color: var(--accent);
+            transform: translateY(-3px);
         }
 
         .paint-colors {
             display: flex;
             flex-wrap: wrap;
-            gap: 3px;
-            margin: 0 10px;
-            padding: 5px;
+            gap: 4px;
+            margin: 0 15px;
+            padding: 6px;
             background: white;
-            border-radius: 4px;
+            border-radius: 6px;
             border: 1px solid #ddd;
         }
 
         .paint-color {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
@@ -642,8 +695,9 @@
         }
 
         .paint-color:hover, .paint-color.active {
-            transform: scale(1.2);
+            transform: scale(1.3);
             border-color: rgba(0,0,0,0.3);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
 
         .paint-main {
@@ -655,168 +709,31 @@
         .paint-canvas-container {
             flex: 1;
             overflow: auto;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
+            touch-action: none;
         }
 
         #advanced-paint-canvas {
             background: white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             cursor: crosshair;
             touch-action: none;
         }
 
         .paint-status {
-            padding: 5px 10px;
+            padding: 8px 15px;
             background: #f0f0f0;
             border-top: 1px solid #ccc;
-            font-size: 12px;
+            font-size: 13px;
             color: #555;
             display: flex;
             justify-content: space-between;
-        }
-
-        /* --- ADVANCED NOTEPAD (TEXT EDITOR) --- */
-        .notepad-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .notepad-menu-bar {
-            display: flex;
-            background: #f0f0f0;
-            padding: 5px;
-            border-bottom: 1px solid #ccc;
-            gap: 15px;
-            font-size: 13px;
-        }
-
-        .notepad-menu-item {
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: var(--transition);
-        }
-
-        .notepad-menu-item:hover {
-            background: rgba(0,0,0,0.05);
-        }
-
-        .notepad-content {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .notepad-tab {
-            display: none;
-            width: 100%;
-            height: 100%;
-            padding: 10px;
-            border: none;
-            outline: none;
-            resize: none;
-            font-family: 'Consolas', monospace;
-            font-size: 14px;
-        }
-
-        .notepad-tab.active {
-            display: block;
-        }
-
-        .notepad-readonly {
-            background: #f9f9f9;
-            color: #666;
-            cursor: not-allowed;
-        }
-
-        /* --- ABOUT ME WINDOW (GitHub Profile) --- */
-        .github-profile {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 40px;
-            background: linear-gradient(135deg, #0d1117, #161b22);
-            color: white;
-        }
-
-        .github-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            border: 4px solid #30363d;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #0d1117;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            color: #f0f6fc;
-        }
-
-        .github-name {
-            font-size: 28px;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #f0f6fc;
-        }
-
-        .github-username {
-            font-size: 18px;
-            color: #8b949e;
-            margin-bottom: 30px;
-            background: #21262d;
-            padding: 8px 16px;
-            border-radius: 20px;
-        }
-
-        .github-link {
-            display: inline-flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 10px;
-            padding: 12px 24px;
-            background: #238636;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            transition: var(--transition);
-            margin-top: 20px;
-        }
-
-        .github-link:hover {
-            background: #2ea043;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(35, 134, 54, 0.3);
-        }
-
-        .github-stats {
-            display: flex;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .github-stat {
-            text-align: center;
-        }
-
-        .github-stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #f0f6fc;
-        }
-
-        .github-stat-label {
-            font-size: 14px;
-            color: #8b949e;
-            margin-top: 5px;
         }
 
         /* --- SOCIALS WINDOW --- */
@@ -829,39 +746,55 @@
         }
 
         .socials-title {
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 30px;
             color: #333;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
+            background: linear-gradient(90deg, #0078d7, #00bcd4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .socials-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 25px;
         }
 
         .social-card {
             background: white;
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 30px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
             transition: var(--transition);
             border: 2px solid transparent;
             cursor: pointer;
+            animation: fadeIn 0.5s ease;
+            animation-fill-mode: both;
         }
 
+        .social-card:nth-child(1) { animation-delay: 0.1s; }
+        .social-card:nth-child(2) { animation-delay: 0.2s; }
+        .social-card:nth-child(3) { animation-delay: 0.3s; }
+        .social-card:nth-child(4) { animation-delay: 0.4s; }
+
         .social-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             border-color: var(--accent);
         }
 
         .social-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
+            font-size: 48px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .social-card:hover .social-icon {
+            transform: scale(1.2) rotate(5deg);
         }
 
         .social-card.instagram .social-icon { color: #E1306C; }
@@ -870,34 +803,37 @@
         .social-card.github .social-icon { color: #333; }
 
         .social-name {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #333;
         }
 
         .social-value {
-            font-size: 14px;
+            font-size: 15px;
             color: #666;
             word-break: break-all;
+            margin-bottom: 20px;
         }
 
         .social-btn {
             margin-top: 15px;
-            padding: 8px 16px;
+            padding: 10px 20px;
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 15px;
             transition: var(--transition);
             display: inline-block;
+            font-weight: 600;
         }
 
         .social-btn:hover {
             background: var(--accent-hover);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 120, 215, 0.3);
         }
 
         /* --- DISCORD WINDOW --- */
@@ -914,73 +850,81 @@
         }
 
         .discord-icon {
-            font-size: 80px;
+            font-size: 100px;
             color: #5865F2;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
         }
 
         .discord-title {
-            font-size: 28px;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
         }
 
         .discord-subtitle {
             color: #b9bbbe;
-            margin-bottom: 30px;
-            font-size: 16px;
-            max-width: 400px;
+            margin-bottom: 40px;
+            font-size: 18px;
+            max-width: 450px;
+            line-height: 1.6;
         }
 
         .discord-invite-btn {
-            padding: 15px 30px;
-            background: #5865F2;
+            padding: 18px 36px;
+            background: linear-gradient(135deg, #5865F2, #4752c4);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            margin-top: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.4);
         }
 
         .discord-invite-btn:hover {
-            background: #4752c4;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.3);
+            background: linear-gradient(135deg, #4752c4, #3c45a5);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(88, 101, 242, 0.5);
         }
 
         .discord-stats {
             display: flex;
-            gap: 30px;
-            margin-top: 30px;
-            font-size: 14px;
+            gap: 40px;
+            margin-top: 40px;
+            font-size: 16px;
             color: #b9bbbe;
         }
 
         /* --- PROJECTS WINDOW WITH ANIMATIONS --- */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            padding: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 30px;
         }
 
         .project-card {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(145deg, #ffffff, #f5f5f5);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: var(--transition-slow);
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.05);
-            min-height: 280px;
+            border: 2px solid transparent;
+            min-height: 320px;
+            animation: fadeIn 0.6s ease;
+            animation-fill-mode: both;
         }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
 
         .project-card::before {
             content: '';
@@ -988,16 +932,16 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
+            height: 5px;
             background: linear-gradient(90deg, var(--accent), #00bcd4);
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.4s ease;
+            transition: transform 0.6s ease;
         }
 
         .project-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
         .project-card:hover::before {
@@ -1008,20 +952,20 @@
         .project-card:nth-child(2):hover { border-color: #28a745; }
 
         .project-icon {
-            font-size: 36px;
-            margin-bottom: 20px;
+            font-size: 42px;
+            margin-bottom: 25px;
             text-align: center;
-            transition: transform 0.4s ease;
+            transition: var(--transition);
         }
 
         .project-card:hover .project-icon {
-            transform: scale(1.2) rotate(5deg);
+            transform: scale(1.3) rotate(10deg);
         }
 
         .project-title {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             color: var(--text-dark);
             position: relative;
             display: inline-block;
@@ -1030,12 +974,12 @@
         .project-title::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 0;
-            width: 30px;
-            height: 2px;
+            width: 40px;
+            height: 3px;
             background: var(--accent);
-            transition: width 0.4s ease;
+            transition: width 0.6s ease;
         }
 
         .project-card:hover .project-title::after {
@@ -1043,48 +987,49 @@
         }
 
         .project-description {
-            font-size: 15px;
+            font-size: 16px;
             color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-            min-height: 80px;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            min-height: 90px;
         }
 
         .project-tech {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .tech-tag {
             background: rgba(0, 120, 215, 0.1);
             color: var(--accent);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            padding: 6px 14px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
         .project-card:hover .tech-tag {
             background: var(--accent);
             color: white;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 120, 215, 0.3);
         }
 
         .project-link {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 25px;
             color: var(--accent);
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
+            font-weight: 700;
+            font-size: 16px;
             opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease 0.1s;
+            transform: translateY(15px);
+            transition: all 0.4s ease 0.1s;
         }
 
         .project-card:hover .project-link {
@@ -1094,58 +1039,62 @@
 
         .project-link:hover {
             text-decoration: underline;
+            transform: translateX(5px);
         }
 
         .project-stats {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
-            font-size: 12px;
+            margin-top: 25px;
+            font-size: 13px;
             color: #888;
             border-top: 1px solid #eee;
-            padding-top: 15px;
+            padding-top: 20px;
         }
 
         .project-stat {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         /* --- CONTEXT MENU --- */
         .context-menu {
             position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: var(--taskbar-blur);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
             z-index: 10001;
-            min-width: 150px;
+            min-width: 180px;
             display: none;
             flex-direction: column;
-            padding: 5px 0;
+            padding: 8px 0;
+            animation: fadeIn 0.15s ease;
+            border: 1px solid #ccc;
         }
 
         .context-item {
-            padding: 8px 15px;
+            padding: 12px 20px;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 14px;
+            font-size: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .context-item:hover {
             background: rgba(0, 120, 215, 0.1);
             color: var(--accent);
+            padding-left: 25px;
         }
 
         .context-divider {
             height: 1px;
             background: #eee;
-            margin: 5px 0;
+            margin: 8px 0;
         }
 
         /* --- START MENU --- */
@@ -1153,65 +1102,62 @@
             position: absolute;
             bottom: var(--taskbar-height);
             left: 0;
-            width: 350px;
-            height: 500px;
-            background: rgba(30, 30, 30, 0.97);
-            backdrop-filter: blur(20px);
-            color: white;
-            border-radius: 0 12px 12px 0;
+            width: 380px;
+            height: 550px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: var(--taskbar-blur);
+            border-radius: 0 16px 16px 0;
             display: none;
             flex-direction: column;
             z-index: 9998;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .start-profile { 
             display: flex; 
             align-items: center; 
-            gap: 15px; 
-            padding: 20px; 
-            background: rgba(255,255,255,0.05); 
+            gap: 20px; 
+            padding: 25px; 
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             margin-bottom: 10px; 
+            color: white;
         }
         
         .start-profile img { 
-            width: 50px; 
-            height: 50px; 
+            width: 60px; 
+            height: 60px; 
             border-radius: 50%; 
-            border: 2px solid var(--accent); 
-            box-shadow: 0 0 10px rgba(0,120,215,0.3);
+            border: 3px solid rgba(255,255,255,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
         .start-apps {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 15px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
         
         .start-item {
-            padding: 12px;
+            padding: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 15px;
-            border-radius: 6px;
+            gap: 20px;
+            border-radius: 10px;
             transition: var(--transition);
+            color: #333;
         }
         
         .start-item:hover { 
-            background: rgba(255,255,255,0.1); 
-            transform: translateX(5px);
+            background: rgba(0, 120, 215, 0.1);
+            transform: translateX(8px);
+            color: var(--accent);
         }
 
         /* --- TASKBAR --- */
@@ -1220,33 +1166,36 @@
             bottom: 0;
             width: 100%;
             height: var(--taskbar-height);
-            background: rgba(20, 20, 20, 0.98);
-            display: none; /* Hidden until login */
+            background: rgba(0, 56, 120, 0.95);
+            backdrop-filter: var(--taskbar-blur);
+            display: flex;
             align-items: center;
-            padding: 0 15px;
+            padding: 0 20px;
             z-index: 9999;
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
         }
 
         .start-btn {
-            height: 35px;
-            width: 35px;
+            height: 40px;
+            width: 40px;
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            margin-right: 15px;
+            margin-right: 20px;
             overflow: hidden;
             transition: var(--transition);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
         }
         
         .start-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            animation: none;
         }
         
         .start-btn img { 
@@ -1257,32 +1206,37 @@
 
         .taskbar-apps { 
             display: flex; 
-            gap: 8px; 
+            gap: 10px; 
             height: 100%;
             align-items: center;
+            flex: 1;
+            overflow-x: auto;
+            padding: 0 10px;
         }
         
         .taskbar-icon {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: var(--transition);
             position: relative;
+            flex-shrink: 0;
         }
         
         .taskbar-icon:hover { 
-            background: rgba(255,255,255,0.15); 
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
         }
         
         .taskbar-icon.active {
-            background: rgba(255,255,255,0.2);
-            border-bottom: 2px solid var(--accent);
+            background: rgba(255,255,255,0.25);
+            border-bottom: 3px solid white;
         }
         
         .taskbar-icon.active::after {
@@ -1291,44 +1245,48 @@
             bottom: 2px;
             left: 50%;
             transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background: var(--accent);
+            background: white;
         }
 
         .clock-tray {
             margin-left: auto;
             color: white;
-            font-size: 13px;
+            font-size: 14px;
             text-align: center;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 8px 15px;
+            border-radius: 8px;
             transition: var(--transition);
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
         .clock-tray:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
         }
 
         /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
-            .login-container {
-                width: 90%;
-                padding: 30px 20px;
+            :root {
+                --taskbar-height: 60px;
             }
             
-            .icon-column-left { 
-                flex-direction: row; 
-                flex-wrap: wrap; 
-                justify-content: center;
+            .icon-column-left, .icon-corner-right { 
                 position: static;
-                margin-bottom: 20px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin: 10px;
+                gap: 15px;
             }
             
-            .icon-corner-right { 
-                bottom: 70px; 
-                right: 10px; 
+            .app-icon {
+                width: 100px;
+                padding: 15px 10px;
             }
             
             .window {
@@ -1337,75 +1295,226 @@
                 top: 0 !important;
                 left: 0 !important;
                 border-radius: 0;
+                min-width: unset;
+                min-height: unset;
+                resize: none;
+            }
+            
+            .title-bar {
+                padding: 15px;
+                font-size: 16px;
+                touch-action: none;
             }
             
             #start-menu { 
                 width: 100%; 
-                height: 70vh;
-                border-radius: 12px 12px 0 0;
+                height: 80vh;
+                border-radius: 20px 20px 0 0;
                 bottom: var(--taskbar-height);
             }
             
+            .start-apps {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .start-item {
+                padding: 12px;
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .start-item span {
+                font-size: 12px;
+            }
+            
             .browser-tabs {
-                overflow-x: auto;
+                padding: 5px;
+            }
+            
+            .browser-tab {
+                padding: 8px 15px;
+                font-size: 13px;
+                max-width: 150px;
+            }
+            
+            .browser-navbar {
+                padding: 10px;
+                gap: 5px;
+            }
+            
+            .browser-address-bar {
+                min-width: unset;
+                font-size: 14px;
+                padding: 8px 12px;
             }
             
             .projects-grid {
                 grid-template-columns: 1fr;
-                padding: 15px;
+                padding: 20px;
                 gap: 20px;
             }
             
             .project-card {
-                padding: 20px;
-                min-height: 250px;
+                padding: 25px;
+                min-height: 280px;
             }
             
             .socials-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
+            
+            .taskbar {
+                padding: 0 10px;
+            }
+            
+            .start-btn {
+                width: 45px;
+                height: 45px;
+                margin-right: 10px;
+            }
+            
+            .taskbar-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .clock-tray {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+            
+            /* Double tap for right click on mobile */
+            .app-icon {
+                touch-action: manipulation;
+            }
+        }
+
+        /* --- NOTIFICATION --- */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10002;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* --- BROWSER FIX FOR IFRAME --- */
+        .browser-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            text-align: center;
+            background: #f8f8f8;
+        }
+
+        .browser-error i {
+            font-size: 60px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+
+        .browser-error h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .browser-error p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 25px;
+            max-width: 400px;
+        }
+
+        /* --- NOTEPAD --- */
+        .notepad-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notepad-menu-bar {
+            background: #f8f8f8;
+            padding: 8px 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 15px;
+        }
+
+        .notepad-menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .notepad-menu-item:hover {
+            background: rgba(0, 120, 215, 0.1);
+            color: var(--accent);
+        }
+
+        .notepad-content {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .notepad-tab {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            display: none;
+        }
+
+        .notepad-tab.active {
+            display: block;
+        }
+
+        .notepad-readonly {
+            background: #f5f5f5;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen">
-        <div class="login-container">
-            <div class="login-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <h2 class="login-title">Welcome to Portfolio OS</h2>
-            <p class="login-subtitle">Please select a user to continue</p>
-            
-            <div class="user-list">
-                <div class="user-option selected" onclick="selectUser('guest')">
-                    <div class="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="user-info">
-                        <h4>Guest</h4>
-                        <p>Limited access user</p>
-                    </div>
-                </div>
-                
-                <div class="user-option" onclick="selectUser('developer')">
-                    <div class="user-avatar">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="user-info">
-                        <h4>Developer</h4>
-                        <p>Full access (coming soon)</p>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="login-btn" onclick="login()">
-                <i class="fas fa-sign-in-alt"></i> Sign In
-            </button>
-            
-            <p style="margin-top: 20px; font-size: 12px; color: #999;">
-                Currently only Guest account is available
-            </p>
+    <!-- SHUTDOWN SCREEN -->
+    <div id="shutdown-screen">
+        <div class="shutdown-logo">
+            <i class="fas fa-power-off"></i>
+        </div>
+        <div class="shutdown-text">Isključivanje sistema...</div>
+        <div class="shutdown-subtext">Molimo sačekajte dok se sistem potpuno isključi.</div>
+        <div class="shutdown-progress">
+            <div class="shutdown-progress-bar" id="shutdown-progress"></div>
         </div>
     </div>
 
@@ -1413,48 +1522,48 @@
     <div class="desktop-container" id="desktop" oncontextmenu="showContextMenu(event, 'desktop'); return false;">
         
         <div class="icon-column-left">
-            <div class="app-icon" onclick="openWindow('projects')">
+            <div class="app-icon" id="icon-projects" draggable="true">
                 <i class="fas fa-folder-open c-folder"></i>
-                <span data-key="projects">Projects</span>
-                <div class="tooltip">My Projects (Double Click)</div>
+                <span data-key="projects">Projekti</span>
+                <div class="tooltip">Moji Projekti (Dupli Klik)</div>
             </div>
-            <div class="app-icon" onclick="openWindow('about')">
+            <div class="app-icon" id="icon-about" draggable="true">
                 <i class="fas fa-user-circle c-user"></i>
-                <span data-key="about">About Me</span>
-                <div class="tooltip">GitHub Profile</div>
+                <span data-key="about">O meni</span>
+                <div class="tooltip">O meni - Učitava o-meni.html</div>
             </div>
-            <div class="app-icon" onclick="openWindow('socials')">
+            <div class="app-icon" id="icon-socials" draggable="true">
                 <i class="fas fa-share-alt c-social"></i>
-                <span data-key="socials">Socials</span>
-                <div class="tooltip">My Social Media Links</div>
+                <span data-key="socials">Društvene mreže</span>
+                <div class="tooltip">Moji Linkovi</div>
             </div>
-            <div class="app-icon" onclick="openWindow('browser')">
+            <div class="app-icon" id="icon-browser" draggable="true">
                 <i class="fab fa-chrome c-browser"></i>
-                <span>Browser</span>
-                <div class="tooltip">Chrome-like Web Browser</div>
+                <span>Pretraživač</span>
+                <div class="tooltip">Web Pretraživač</div>
             </div>
-            <div class="app-icon" onclick="openWindow('paint')">
+            <div class="app-icon" id="icon-paint" draggable="true">
                 <i class="fas fa-paint-brush c-paint"></i>
                 <span>Paint Pro</span>
-                <div class="tooltip">Advanced Drawing Tool</div>
+                <div class="tooltip">Napredni Paint</div>
             </div>
         </div>
 
         <div class="icon-corner-right">
-            <div class="app-icon" onclick="openWindow('discord')">
+            <div class="app-icon" id="icon-discord" draggable="true">
                 <i class="fab fa-discord c-discord"></i>
                 <span>Discord</span>
-                <div class="tooltip">Join My Discord Server</div>
+                <div class="tooltip">Pridružite se serveru</div>
             </div>
-            <div class="app-icon" onclick="openLink('https://github.com/ilijxp')">
+            <div class="app-icon" id="icon-github" draggable="true">
                 <i class="fab fa-github c-github"></i>
                 <span>GitHub</span>
-                <div class="tooltip">View My GitHub Profile</div>
+                <div class="tooltip">Moj GitHub Profil</div>
             </div>
-            <div class="app-icon" onclick="createNewTextFile()">
+            <div class="app-icon" id="icon-notepad" draggable="true">
                 <i class="fas fa-file-alt c-notepad"></i>
-                <span>New Text File</span>
-                <div class="tooltip">Create New Editable Text File</div>
+                <span>Novi fajl</span>
+                <div class="tooltip">Napravi novi fajl</div>
             </div>
         </div>
     </div>
@@ -1462,14 +1571,18 @@
     <!-- Context Menu -->
     <div class="context-menu" id="context-menu"></div>
 
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
     <!-- PROJECTS WINDOW -->
-    <div id="win-projects" class="window" style="top: 10%; left: 15%; width: 700px; height: 550px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-projects')">
-            <span data-key="projects">My Projects</span>
+    <div id="win-projects" class="window" style="top: 10%; left: 15%; width: 750px; height: 600px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-projects')" ontouchstart="startDragTouch(event, 'win-projects')">
+            <span data-key="projects">Moji Projekti</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-projects')"></span>
-                <span class="close-btn" onclick="closeWindow('win-projects')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-projects')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-projects')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-projects')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
@@ -1479,7 +1592,7 @@
                         <i class="fas fa-desktop"></i>
                     </div>
                     <h3 class="project-title">Portfolio OS</h3>
-                    <p class="project-description">A web-based operating system interface built with HTML5, CSS3, and vanilla JavaScript. Features realistic window management, apps, and a taskbar with full functionality.</p>
+                    <p class="project-description">Web-baziran operativni sistem izgrađen sa HTML5, CSS3 i vanilla JavaScript. Ima realističan menadžment prozora, aplikacije i taskbar sa punom funkcionalnošću.</p>
                     <div class="project-tech">
                         <span class="tech-tag">HTML5</span>
                         <span class="tech-tag">CSS3</span>
@@ -1488,11 +1601,11 @@
                         <span class="tech-tag">LocalStorage</span>
                     </div>
                     <a href="#" class="project-link" onclick="openWindow('browser')">
-                        <i class="fas fa-external-link-alt"></i> Live Demo
+                        <i class="fas fa-external-link-alt"></i> Demo
                     </a>
                     <div class="project-stats">
-                        <span class="project-stat"><i class="fas fa-code"></i> 2.5k lines</span>
-                        <span class="project-stat"><i class="far fa-calendar"></i> March 2024</span>
+                        <span class="project-stat"><i class="fas fa-code"></i> 2.2k linija</span>
+                        <span class="project-stat"><i class="far fa-calendar"></i> Februar 2026</span>
                     </div>
                 </div>
 
@@ -1501,7 +1614,7 @@
                         <i class="fas fa-bus"></i>
                     </div>
                     <h3 class="project-title">Joe Travel</h3>
-                    <p class="project-description">A modern bus station website with real-time schedule updates, ticket booking system, and interactive maps. Built for seamless travel experience.</p>
+                    <p class="project-description">Moderni vebsajt autobuske stanice sa ažuriranim redom vožnje, sistemom za rezervaciju karata i interaktivnim mapama. Izgrađen za jednostavno putovanje.</p>
                     <div class="project-tech">
                         <span class="tech-tag">HTML5</span>
                         <span class="tech-tag">CSS3</span>
@@ -1510,71 +1623,49 @@
                         <span class="tech-tag">UX/UI</span>
                     </div>
                     <a href="https://ilijxp.github.io/joetravel/#pocetna" class="project-link" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Visit Website
+                        <i class="fas fa-external-link-alt"></i> Poseti sajt
                     </a>
                     <div class="project-stats">
-                        <span class="project-stat"><i class="fas fa-code"></i> 1.8k lines</span>
-                        <span class="project-stat"><i class="far fa-calendar"></i> February 2024</span>
+                        <span class="project-stat"><i class="fas fa-code"></i> 1k linija</span>
+                        <span class="project-stat"><i class="far fa-calendar"></i> Februar 2026</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ABOUT ME WINDOW (GitHub Profile) -->
-    <div id="win-about" class="window" style="top: 15%; left: 20%; width: 500px; height: 500px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-about')">
-            <span data-key="about">About Me</span>
+    <!-- ABOUT ME WINDOW -->
+    <div id="win-about" class="window" style="top: 15%; left: 20%; width: 700px; height: 600px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-about')" ontouchstart="startDragTouch(event, 'win-about')">
+            <span data-key="about">O meni</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-about')"></span>
-                <span class="close-btn" onclick="closeWindow('win-about')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-about')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-about')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-about')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
-            <div class="github-profile">
-                <div class="github-avatar">
-                    <i class="fab fa-github"></i>
-                </div>
-                <h2 class="github-name">ilijxp</h2>
-                <div class="github-username">@ilijxp</div>
-                <div class="github-stats">
-                    <div class="github-stat">
-                        <div class="github-stat-value">8</div>
-                        <div class="github-stat-label">Repositories</div>
-                    </div>
-                    <div class="github-stat">
-                        <div class="github-stat-value">24</div>
-                        <div class="github-stat-label">Commits</div>
-                    </div>
-                    <div class="github-stat">
-                        <div class="github-stat-value">3</div>
-                        <div class="github-stat-label">Projects</div>
-                    </div>
-                </div>
-                <a href="https://github.com/ilijxp" class="github-link" target="_blank">
-                    <i class="fab fa-github"></i> View GitHub Profile
-                </a>
-                <p style="margin-top: 30px; color: #8b949e; text-align: center; max-width: 400px;">
-                    Full-stack developer passionate about creating interactive web applications and user interfaces.
-                </p>
+            <div id="about-content" class="about-content">
+                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
 
     <!-- SOCIALS WINDOW -->
-    <div id="win-socials" class="window" style="top: 20%; left: 25%; width: 500px; height: 400px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-socials')">
-            <span>Socials</span>
+    <div id="win-socials" class="window" style="top: 20%; left: 25%; width: 550px; height: 450px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-socials')" ontouchstart="startDragTouch(event, 'win-socials')">
+            <span>Društvene mreže</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-socials')"></span>
-                <span class="close-btn" onclick="closeWindow('win-socials')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-socials')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-socials')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-socials')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
             <div class="socials-container">
-                <h3 class="socials-title">Connect With Me</h3>
+                <h3 class="socials-title">Kontaktirajte me</h3>
                 <div class="socials-grid">
                     <div class="social-card instagram" onclick="openLink('https://instagram.com/ilijxp')">
                         <div class="social-icon">
@@ -1582,7 +1673,7 @@
                         </div>
                         <h4 class="social-name">Instagram</h4>
                         <p class="social-value">@ilijxp</p>
-                        <button class="social-btn">Follow</button>
+                        <button class="social-btn">Zaprati</button>
                     </div>
                     
                     <div class="social-card email" onclick="copyToClipboard('ilijxpdev@gmail.com')">
@@ -1591,7 +1682,7 @@
                         </div>
                         <h4 class="social-name">Email</h4>
                         <p class="social-value">ilijxpdev@gmail.com</p>
-                        <button class="social-btn">Copy Email</button>
+                        <button class="social-btn">Kopiraj Email</button>
                     </div>
                     
                     <div class="social-card discord" onclick="openWindow('discord')">
@@ -1599,8 +1690,8 @@
                             <i class="fab fa-discord"></i>
                         </div>
                         <h4 class="social-name">Discord</h4>
-                        <p class="social-value">Join my server</p>
-                        <button class="social-btn">Join Server</button>
+                        <p class="social-value">Pridruži se serveru</p>
+                        <button class="social-btn">Pridruži se</button>
                     </div>
                     
                     <div class="social-card github" onclick="openLink('https://github.com/ilijxp')">
@@ -1609,7 +1700,7 @@
                         </div>
                         <h4 class="social-name">GitHub</h4>
                         <p class="social-value">@ilijxp</p>
-                        <button class="social-btn">View Profile</button>
+                        <button class="social-btn">Vidi Profil</button>
                     </div>
                 </div>
             </div>
@@ -1617,57 +1708,59 @@
     </div>
 
     <!-- DISCORD WINDOW -->
-    <div id="win-discord" class="window" style="top: 25%; left: 30%; width: 500px; height: 400px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-discord')">
+    <div id="win-discord" class="window" style="top: 25%; left: 30%; width: 550px; height: 450px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-discord')" ontouchstart="startDragTouch(event, 'win-discord')">
             <span>Discord Server</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-discord')"></span>
-                <span class="close-btn" onclick="closeWindow('win-discord')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-discord')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-discord')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-discord')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
             <div class="discord-container">
                 <i class="fab fa-discord discord-icon"></i>
-                <h2 class="discord-title">Join My Discord Community</h2>
+                <h2 class="discord-title">Pridružite se Discord zajednici</h2>
                 <p class="discord-subtitle">
-                    Connect with other developers, share projects, get help, and collaborate on exciting new ideas.
+                    Povežite se sa drugim developerima, delite projekte, dobijte pomoć i saradite na novim idejama.
                 </p>
                 
                 <button class="discord-invite-btn" onclick="openLink('https://discord.gg/4FKrGDEWjM')">
-                    <i class="fab fa-discord"></i> Join Discord Server
+                    <i class="fab fa-discord"></i> Pridruži se Discordu
                 </button>
                 
                 <div class="discord-stats">
                     <div>
-                        <div style="font-size: 18px; color: white;">50+</div>
-                        <div>Members</div>
+                        <div style="font-size: 22px; color: white;">50+</div>
+                        <div>Članova</div>
                     </div>
                     <div>
-                        <div style="font-size: 18px; color: white;">3</div>
-                        <div>Channels</div>
+                        <div style="font-size: 22px; color: white;">3</div>
+                        <div>Kanala</div>
                     </div>
                     <div>
-                        <div style="font-size: 18px; color: white;">24/7</div>
-                        <div>Active</div>
+                        <div style="font-size: 22px; color: white;">24/7</div>
+                        <div>Aktivno</div>
                     </div>
                 </div>
                 
-                <p style="margin-top: 30px; color: #b9bbbe; font-size: 14px;">
-                    Click the button above to join instantly!
+                <p style="margin-top: 30px; color: #b9bbbe; font-size: 15px;">
+                    Kliknite na dugme iznad da se odmah pridružite!
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- ADVANCED BROWSER -->
-    <div id="win-browser" class="window" style="top: 5%; left: 10%; width: 900px; height: 700px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-browser')" oncontextmenu="showContextMenu(event, 'browser'); return false;">
-            <span>Web Browser</span>
+    <!-- BROWSER WINDOW -->
+    <div id="win-browser" class="window" style="top: 5%; left: 10%; width: 950px; height: 750px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-browser')" ontouchstart="startDragTouch(event, 'win-browser')" oncontextmenu="showContextMenu(event, 'browser'); return false;">
+            <span>Pretraživač</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-browser')"></span>
-                <span class="close-btn" onclick="closeWindow('win-browser')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-browser')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-browser')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-browser')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
@@ -1679,11 +1772,11 @@
                     </div>
                 </div>
                 <div class="browser-navbar">
-                    <button class="browser-nav-btn" onclick="browserGoBack()" title="Back"><i class="fas fa-arrow-left"></i></button>
-                    <button class="browser-nav-btn" onclick="browserGoForward()" title="Forward"><i class="fas fa-arrow-right"></i></button>
-                    <button class="browser-nav-btn" onclick="browserRefresh()" title="Refresh"><i class="fas fa-redo"></i></button>
-                    <input type="text" class="browser-address-bar" id="browser-address" placeholder="Search Google or type a URL" value="https://www.google.com" onkeypress="if(event.key==='Enter') browserNavigate()">
-                    <button class="browser-nav-btn" onclick="browserNavigate()" title="Go"><i class="fas fa-search"></i></button>
+                    <button class="browser-nav-btn" onclick="browserGoBack()" title="Nazad"><i class="fas fa-arrow-left"></i></button>
+                    <button class="browser-nav-btn" onclick="browserGoForward()" title="Napred"><i class="fas fa-arrow-right"></i></button>
+                    <button class="browser-nav-btn" onclick="browserRefresh()" title="Osveži"><i class="fas fa-redo"></i></button>
+                    <input type="text" class="browser-address-bar" id="browser-address" placeholder="Pretraži Google ili unesi URL" value="https://www.google.com" onkeypress="if(event.key==='Enter') browserNavigate()">
+                    <button class="browser-nav-btn" onclick="browserNavigate()" title="Idi"><i class="fas fa-search"></i></button>
                 </div>
                 <div class="bookmarks-bar">
                     <span class="bookmark" onclick="browserQuickNav('https://www.google.com')">Google</span>
@@ -1695,97 +1788,107 @@
                 </div>
                 <div class="browser-content">
                     <div class="browser-tab-content active" id="browser-tab-newtab">
-                        <iframe class="browser-iframe" src="https://www.google.com" id="browser-iframe-newtab"></iframe>
+                        <div class="browser-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Browser zabrane</h3>
+                            <p>Zbog bezbednosnih ograničenja (CORS politika), ne možemo prikazati spoljne vebsajtove unutar iframe-a.</p>
+                            <p>Kliknite na dugme ispod da otvorite sajt u novom tabu:</p>
+                            <button onclick="window.open('https://www.google.com', '_blank')" style="padding: 12px 24px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
+                                <i class="fas fa-external-link-alt"></i> Otvori Google u novom tabu
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ADVANCED PAINT -->
-    <div id="win-paint" class="window" style="top: 5%; left: 5%; width: 700px; height: 550px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-paint')">
+    <!-- PAINT WINDOW -->
+    <div id="win-paint" class="window" style="top: 5%; left: 5%; width: 750px; height: 600px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-paint')" ontouchstart="startDragTouch(event, 'win-paint')">
             <span>Paint Pro</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-paint')"></span>
-                <span class="close-btn" onclick="closeWindow('win-paint')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-paint')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-paint')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-paint')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
             <div class="paint-container">
                 <div class="paint-toolbar">
-                    <div class="paint-tool active" onclick="selectPaintTool('brush')" title="Brush (B)">
+                    <div class="paint-tool active" onclick="selectPaintTool('brush')" title="Četkica (B)">
                         <i class="fas fa-paint-brush"></i>
                     </div>
-                    <div class="paint-tool" onclick="selectPaintTool('line')" title="Line (L)">
+                    <div class="paint-tool" onclick="selectPaintTool('line')" title="Linija (L)">
                         <i class="fas fa-slash"></i>
                     </div>
-                    <div class="paint-tool" onclick="selectPaintTool('rect')" title="Rectangle (R)">
+                    <div class="paint-tool" onclick="selectPaintTool('rect')" title="Pravougaonik (R)">
                         <i class="far fa-square"></i>
                     </div>
-                    <div class="paint-tool" onclick="selectPaintTool('circle')" title="Circle (C)">
+                    <div class="paint-tool" onclick="selectPaintTool('circle')" title="Krug (C)">
                         <i class="far fa-circle"></i>
                     </div>
-                    <div class="paint-tool" onclick="selectPaintTool('text')" title="Text (T)">
+                    <div class="paint-tool" onclick="selectPaintTool('text')" title="Tekst (T)">
                         <i class="fas fa-font"></i>
                     </div>
-                    <div class="paint-tool" onclick="selectPaintTool('eraser')" title="Eraser (E)">
+                    <div class="paint-tool" onclick="selectPaintTool('eraser')" title="Gumica (E)">
                         <i class="fas fa-eraser"></i>
                     </div>
-                    <div class="paint-tool" onclick="clearAdvancedCanvas()" title="Clear Canvas">
+                    <div class="paint-tool" onclick="clearAdvancedCanvas()" title="Očisti">
                         <i class="fas fa-trash-alt"></i>
                     </div>
-                    <div style="margin-left: 10px;">Color:</div>
+                    <div style="margin-left: 10px;">Boja:</div>
                     <div class="paint-colors" id="paint-color-palette">
-                        <!-- Colors populated by JS -->
+                        <!-- Boje će biti popunjene JS-om -->
                     </div>
                     <div style="margin-left: auto;">
-                        <button onclick="savePaint()" style="padding: 6px 12px; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer;">
-                            <i class="fas fa-save"></i> Save
+                        <button onclick="savePaint()" style="padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-save"></i> Sačuvaj
                         </button>
                     </div>
                 </div>
                 <div class="paint-main">
                     <div class="paint-canvas-container">
-                        <canvas id="advanced-paint-canvas" width="650" height="400"></canvas>
+                        <canvas id="advanced-paint-canvas" width="700" height="450"></canvas>
                     </div>
                 </div>
                 <div class="paint-status">
-                    <span>Tool: <span id="paint-current-tool">Brush</span></span>
-                    <span>Size: <input type="range" id="paint-brush-size" min="1" max="50" value="3" onchange="updateBrushSize(this.value)" style="vertical-align: middle;"></span>
+                    <span>Alat: <span id="paint-current-tool">Četkica</span></span>
+                    <span>Veličina: <input type="range" id="paint-brush-size" min="1" max="50" value="3" onchange="updateBrushSize(this.value)" style="vertical-align: middle;"></span>
                     <span id="paint-coords">X: 0, Y: 0</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ADVANCED NOTEPAD -->
-    <div id="win-notepad" class="window" style="top: 10%; left: 40%; width: 500px; height: 400px;">
-        <div class="title-bar" onmousedown="dragWindow(event, 'win-notepad')">
-            <span>Notepad</span>
+    <!-- NOTEPAD WINDOW -->
+    <div id="win-notepad" class="window" style="top: 10%; left: 40%; width: 550px; height: 450px;">
+        <div class="title-bar" onmousedown="startDrag(event, 'win-notepad')" ontouchstart="startDragTouch(event, 'win-notepad')">
+            <span>Beležnica</span>
             <div class="window-controls">
-                <span class="logout-btn" onclick="logout()" title="Logout"></span>
-                <span class="min-btn" onclick="minWindow('win-notepad')"></span>
-                <span class="close-btn" onclick="closeWindow('win-notepad')"></span>
+                <span class="logout-btn" onclick="shutdownOS()" title="Isključi"><i class="fas fa-power-off"></i></span>
+                <span class="min-btn" onclick="minWindow('win-notepad')" title="Smanji"><i class="fas fa-window-minimize"></i></span>
+                <span class="max-btn" onclick="toggleMaximize('win-notepad')" title="Povećaj"><i class="fas fa-window-maximize"></i></span>
+                <span class="close-btn" onclick="closeWindow('win-notepad')" title="Zatvori"><i class="fas fa-times"></i></span>
             </div>
         </div>
         <div class="window-content">
             <div class="notepad-container">
                 <div class="notepad-menu-bar">
                     <div class="notepad-menu-item" onclick="createNewTextFile()">
-                        <i class="fas fa-file"></i> New
+                        <i class="fas fa-file"></i> Novi
                     </div>
                     <div class="notepad-menu-item" onclick="saveTxt()">
-                        <i class="fas fa-save"></i> Save
+                        <i class="fas fa-save"></i> Sačuvaj
                     </div>
                 </div>
                 <div class="notepad-content">
                     <textarea class="notepad-tab notepad-readonly active" id="notepad-file-1" readonly>
-Welcome to Portfolio OS Notepad!
-This is a read-only example file.
-You can create NEW files to edit them.
-Right-click for more options!
+Dobrodošli u Portfolio OS Beležnicu!
+Ovo je primer samo-za-čitanje fajla.
+Možete napraviti NOVE fajlove da ih uređujete.
+Desni klik za više opcija!
                     </textarea>
                 </div>
             </div>
@@ -1795,36 +1898,36 @@ Right-click for more options!
     <!-- START MENU -->
     <div id="start-menu">
         <div class="start-profile">
-            <img src="https://ui-avatars.com/api/?name=Guest&background=0078d7&color=fff" alt="User">
+            <img src="https://ui-avatars.com/api/?name=Portfolio+OS&background=0078d7&color=fff" alt="Korisnik">
             <div>
-                <span style="font-weight: bold; font-size: 16px;">Guest</span><br>
-                <span style="font-size: 12px; opacity: 0.8;">Limited Access</span>
+                <span style="font-weight: bold; font-size: 18px;">Portfolio OS</span><br>
+                <span style="font-size: 13px; opacity: 0.9;">v3.0</span>
             </div>
         </div>
         <div class="start-apps">
             <div class="start-item" onclick="openWindow('projects')">
                 <i class="fas fa-folder c-folder"></i>
-                <span data-key="projects">Projects</span>
+                <span>Projekti</span>
             </div>
             <div class="start-item" onclick="openWindow('about')">
                 <i class="fas fa-user c-user"></i>
-                <span data-key="about">About Me</span>
+                <span>O meni</span>
             </div>
             <div class="start-item" onclick="openWindow('browser')">
                 <i class="fab fa-chrome c-browser"></i>
-                <span>Browser</span>
+                <span>Pretraživač</span>
             </div>
             <div class="start-item" onclick="openWindow('paint')">
                 <i class="fas fa-paint-brush c-paint"></i>
                 <span>Paint Pro</span>
             </div>
-            <div class="start-item" onclick="openWindow('notepad')">
+            <div class="start-item" onclick="createNewTextFile()">
                 <i class="fas fa-file-alt c-notepad"></i>
-                <span>Notepad</span>
+                <span>Beležnica</span>
             </div>
             <div class="start-item" onclick="createNewTextFile()">
                 <i class="fas fa-plus-circle"></i>
-                <span>New Text File</span>
+                <span>Novi fajl</span>
             </div>
             <div class="start-item" onclick="openLink('https://github.com/ilijxp')">
                 <i class="fab fa-github c-github"></i>
@@ -1836,17 +1939,13 @@ Right-click for more options!
             </div>
             <div class="start-item" onclick="openWindow('socials')">
                 <i class="fas fa-share-alt c-social"></i>
-                <span>Socials</span>
+                <span>Društvene mreže</span>
             </div>
         </div>
-        <div style="padding: 15px; background: rgba(255,255,255,0.05); margin-top: auto; display: flex; gap: 10px;">
-            <div class="start-item" onclick="logout()" style="flex: 1; text-align: center; background: rgba(255,255,255,0.1);">
-                <i class="fas fa-sign-out-alt" style="color: #ffa500;"></i>
-                <span>Logout</span>
-            </div>
-            <div class="start-item" onclick="shutdownOS()" style="flex: 1; text-align: center; background: rgba(255,255,255,0.1);">
+        <div style="padding: 15px; background: rgba(0,0,0,0.05); margin-top: auto; display: flex; gap: 10px;">
+            <div class="start-item" onclick="shutdownOS()" style="flex: 1; text-align: center; background: rgba(0,0,0,0.1);">
                 <i class="fas fa-power-off" style="color: #ff6b6b;"></i>
-                <span data-key="shutdown">Shutdown</span>
+                <span>Isključi</span>
             </div>
         </div>
     </div>
@@ -1858,7 +1957,7 @@ Right-click for more options!
         </div>
         
         <div class="taskbar-apps">
-            <div class="taskbar-icon" onclick="openWindow('browser')" title="Browser" id="taskbar-browser">
+            <div class="taskbar-icon" onclick="openWindow('browser')" title="Pretraživač" id="taskbar-browser">
                 <i class="fab fa-chrome"></i>
             </div>
             <div class="taskbar-icon" onclick="openWindow('paint')" title="Paint" id="taskbar-paint">
@@ -1867,13 +1966,16 @@ Right-click for more options!
             <div class="taskbar-icon" onclick="openWindow('discord')" title="Discord" id="taskbar-discord">
                 <i class="fab fa-discord"></i>
             </div>
-            <div class="taskbar-icon" onclick="openWindow('notepad')" title="Notepad" id="taskbar-notepad">
+            <div class="taskbar-icon" onclick="openWindow('notepad')" title="Beležnica" id="taskbar-notepad">
                 <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="taskbar-icon" onclick="openWindow('projects')" title="Projekti" id="taskbar-projects">
+                <i class="fas fa-folder"></i>
             </div>
         </div>
 
         <div class="clock-tray" id="clock" onclick="showContextMenu(event, 'clock')">
-            12:00 PM<br>1/1/2024
+            12:00<br>1/1/2024
         </div>
     </div>
 
@@ -1884,121 +1986,149 @@ Right-click for more options!
         let dragOffsetX = 0;
         let dragOffsetY = 0;
         let currentWindow = null;
-        let currentLang = 'en';
+        let currentLang = 'sr';
         let textFileCounter = 1;
         let paintHistory = [];
-        let selectedUser = 'guest';
-        let isLoggedIn = false;
+        let isDraggingIcon = false;
+        let draggedIcon = null;
+        let iconStartX = 0;
+        let iconStartY = 0;
+        let lastTouchTime = 0;
+        let isTouchDevice = 'ontouchstart' in window;
+        let isShuttingDown = false;
+        let browserTabs = ['newtab'];
+        let currentBrowserTab = 'newtab';
+        let browserHistory = { newtab: ['https://www.google.com'] };
+        let browserHistoryIndex = { newtab: 0 };
+        let paintCtx;
+        let painting = false;
+        let paintTool = 'brush';
+        let paintColor = '#000000';
+        let brushSize = 3;
+        let startX, startY;
+        let snapshot;
 
-        // ========== LOGIN SYSTEM ==========
-        function selectUser(user) {
-            selectedUser = user;
-            document.querySelectorAll('.user-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            event.currentTarget.classList.add('selected');
-        }
-
-        function login() {
-            const loginScreen = document.getElementById('login-screen');
-            const desktop = document.getElementById('desktop');
-            const taskbar = document.getElementById('taskbar');
+        // ========== SHUTDOWN SYSTEM ==========
+        function shutdownOS() {
+            if(isShuttingDown) return;
             
-            // Animate login screen fade out
-            loginScreen.style.opacity = '0';
+            isShuttingDown = true;
+            const shutdownScreen = document.getElementById('shutdown-screen');
+            const progressBar = document.getElementById('shutdown-progress');
             
+            // Show shutdown screen
+            shutdownScreen.style.display = 'flex';
+            shutdownScreen.style.zIndex = 20000;
+            
+            // Animate progress bar
             setTimeout(() => {
-                loginScreen.style.display = 'none';
-                desktop.style.display = 'block';
-                taskbar.style.display = 'flex';
-                isLoggedIn = true;
-                
-                // Update start menu profile
-                const startProfile = document.querySelector('.start-profile img');
-                if (selectedUser === 'guest') {
-                    startProfile.src = 'https://ui-avatars.com/api/?name=Guest&background=0078d7&color=fff';
-                    document.querySelector('.start-profile span').textContent = 'Guest';
-                } else {
-                    startProfile.src = 'https://ui-avatars.com/api/?name=Developer&background=28a745&color=fff';
-                    document.querySelector('.start-profile span').textContent = 'Developer';
-                }
-                
-                // Show welcome notification
-                showNotification(`Welcome, ${selectedUser === 'guest' ? 'Guest' : 'Developer'}!`);
-            }, 500);
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to log out?')) {
+                progressBar.style.width = '100%';
+            }, 100);
+            
+            // Shutdown sequence
+            setTimeout(() => {
                 // Close all windows
                 document.querySelectorAll('.window').forEach(win => {
                     win.style.display = 'none';
                 });
                 
-                // Hide desktop and taskbar
-                document.getElementById('desktop').style.display = 'none';
+                // Hide taskbar and start menu
                 document.getElementById('taskbar').style.display = 'none';
                 document.getElementById('start-menu').style.display = 'none';
                 
-                // Reset selected user
-                selectedUser = 'guest';
-                document.querySelectorAll('.user-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                document.querySelector('.user-option').classList.add('selected');
+                // Final shutdown message
+                document.querySelector('.shutdown-text').textContent = 'Sistem je isključen';
+                document.querySelector('.shutdown-subtext').textContent = 'Možete sada bezbjedno ugasiti prozor.';
+                document.querySelector('.shutdown-logo').innerHTML = '<i class="fas fa-check-circle"></i>';
                 
-                // Show login screen
-                const loginScreen = document.getElementById('login-screen');
-                loginScreen.style.display = 'flex';
+                // Add restart option
                 setTimeout(() => {
-                    loginScreen.style.opacity = '1';
-                }, 50);
+                    const restartBtn = document.createElement('button');
+                    restartBtn.innerHTML = '<i class="fas fa-redo"></i> Restartuj sistem';
+                    restartBtn.style.padding = '15px 30px';
+                    restartBtn.style.background = 'linear-gradient(135deg, #0078d7, #005a9e)';
+                    restartBtn.style.color = 'white';
+                    restartBtn.style.border = 'none';
+                    restartBtn.style.borderRadius = '8px';
+                    restartBtn.style.fontSize = '18px';
+                    restartBtn.style.cursor = 'pointer';
+                    restartBtn.style.marginTop = '30px';
+                    restartBtn.onclick = () => {
+                        location.reload();
+                    };
+                    
+                    shutdownScreen.appendChild(restartBtn);
+                }, 1000);
                 
-                isLoggedIn = false;
-            }
+            }, 3000);
         }
 
         function showNotification(message) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.right = '20px';
-            notification.style.background = 'rgba(0, 120, 215, 0.9)';
-            notification.style.color = 'white';
-            notification.style.padding = '15px 20px';
-            notification.style.borderRadius = '8px';
-            notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
-            notification.style.zIndex = '10001';
-            notification.style.transform = 'translateX(100px)';
-            notification.style.opacity = '0';
-            notification.style.transition = 'all 0.3s ease';
+            const notification = document.getElementById('notification');
             notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            notification.classList.add('show');
             
-            document.body.appendChild(notification);
-            
-            // Animate in
             setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-                notification.style.opacity = '1';
-            }, 10);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100px)';
-                notification.style.opacity = '0';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
+                notification.classList.remove('show');
             }, 3000);
+        }
+
+        // ========== LOAD ABOUT ME CONTENT ==========
+        function loadAboutContent() {
+            const aboutContent = document.getElementById('about-content');
+            
+            // Show loading state
+            aboutContent.innerHTML = `
+                <div class="about-loading">
+                    <i class="fas fa-spinner"></i>
+                    <h3>Učitavam podatke...</h3>
+                    <p>Molim sačekajte dok se učitava "o-meni.html" fajl.</p>
+                </div>
+            `;
+            
+            // Try to load the o-meni.html file
+            fetch('o-meni.html')
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Fajl nije pronađen');
+                    }
+                })
+                .then(html => {
+                    // Success - display the loaded HTML
+                    aboutContent.innerHTML = html;
+                    showNotification('Fajl "o-meni.html" je uspješno učitan!');
+                })
+                .catch(error => {
+                    // File not found or error loading
+                    aboutContent.innerHTML = `
+                        <div class="about-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Fajl nije pronađen</h3>
+                            <p>Fajl "o-meni.html" nije pronađen u direktorijumu.</p>
+                            <p style="margin-top: 30px; font-size: 24px; color: #333; font-weight: bold;">
+                                Trenutno u izradi!
+                            </p>
+                            <p style="margin-top: 20px; color: #666;">
+                                Ova sekcija će biti dostupna uskoro kada fajl bude dodat.
+                            </p>
+                            <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                                <button onclick="openLink('https://github.com/ilijxp')" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                    <i class="fab fa-github"></i> GitHub
+                                </button>
+                                <button onclick="openWindow('socials')" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                    <i class="fas fa-share-alt"></i> Društvene mreže
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    console.log('Greška pri učitavanju o-meni.html:', error);
+                });
         }
 
         // ========== WINDOW MANAGEMENT ==========
         function openWindow(appId) {
-            if (!isLoggedIn) return;
-            
             const win = document.getElementById('win-' + appId);
             if(win) {
                 win.style.display = 'flex';
@@ -2014,6 +2144,7 @@ Right-click for more options!
                 // Special initialization for certain apps
                 if(appId === 'paint') initPaint();
                 if(appId === 'browser') initBrowser();
+                if(appId === 'about') loadAboutContent();
             }
         }
 
@@ -2043,14 +2174,243 @@ Right-click for more options!
             }
         }
 
-        function openLink(url) {
-            if (!isLoggedIn) return;
-            window.open(url, '_blank');
+        function toggleMaximize(winId) {
+            const win = document.getElementById(winId);
+            if (win.classList.contains('maximized')) {
+                win.classList.remove('maximized');
+                win.style.width = win.dataset.prevWidth || '750px';
+                win.style.height = win.dataset.prevHeight || '600px';
+                win.style.top = win.dataset.prevTop || '10%';
+                win.style.left = win.dataset.prevLeft || '15%';
+            } else {
+                win.dataset.prevWidth = win.style.width;
+                win.dataset.prevHeight = win.style.height;
+                win.dataset.prevTop = win.style.top;
+                win.dataset.prevLeft = win.style.left;
+                
+                win.classList.add('maximized');
+            }
         }
 
-        function toggleStartMenu() {
-            if (!isLoggedIn) return;
+        // ========== WINDOW DRAGGING ==========
+        function startDrag(e, winId) {
+            e.preventDefault();
+            isDragging = true;
+            currentWindow = document.getElementById(winId);
             
+            // Remove maximized state if dragging
+            if (currentWindow.classList.contains('maximized')) {
+                currentWindow.classList.remove('maximized');
+                // Restore previous position and size
+                currentWindow.style.width = currentWindow.dataset.prevWidth || '750px';
+                currentWindow.style.height = currentWindow.dataset.prevHeight || '600px';
+                currentWindow.style.top = currentWindow.dataset.prevTop || '10%';
+                currentWindow.style.left = currentWindow.dataset.prevLeft || '15%';
+            }
+            
+            const rect = currentWindow.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            
+            currentWindow.style.zIndex = ++highestZ;
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+
+        function startDragTouch(e, winId) {
+            e.preventDefault();
+            isDragging = true;
+            currentWindow = document.getElementById(winId);
+            
+            // Remove maximized state if dragging
+            if (currentWindow.classList.contains('maximized')) {
+                currentWindow.classList.remove('maximized');
+                // Restore previous position and size
+                currentWindow.style.width = currentWindow.dataset.prevWidth || '750px';
+                currentWindow.style.height = currentWindow.dataset.prevHeight || '600px';
+                currentWindow.style.top = currentWindow.dataset.prevTop || '10%';
+                currentWindow.style.left = currentWindow.dataset.prevLeft || '15%';
+            }
+            
+            const rect = currentWindow.getBoundingClientRect();
+            dragOffsetX = e.touches[0].clientX - rect.left;
+            dragOffsetY = e.touches[0].clientY - rect.top;
+            
+            currentWindow.style.zIndex = ++highestZ;
+
+            document.addEventListener('touchmove', onTouchMove, {passive: false});
+            document.addEventListener('touchend', onTouchEnd);
+        }
+
+        function onMouseMove(e) {
+            if (!isDragging || !currentWindow) return;
+            
+            let x = e.clientX - dragOffsetX;
+            let y = e.clientY - dragOffsetY;
+            
+            // Keep within bounds
+            const maxX = window.innerWidth - currentWindow.offsetWidth;
+            const maxY = window.innerHeight - currentWindow.offsetHeight;
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            currentWindow.style.left = x + 'px';
+            currentWindow.style.top = y + 'px';
+        }
+
+        function onTouchMove(e) {
+            if (!isDragging || !currentWindow || e.touches.length !== 1) return;
+            
+            let x = e.touches[0].clientX - dragOffsetX;
+            let y = e.touches[0].clientY - dragOffsetY;
+            
+            // Keep within bounds
+            const maxX = window.innerWidth - currentWindow.offsetWidth;
+            const maxY = window.innerHeight - currentWindow.offsetHeight;
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            currentWindow.style.left = x + 'px';
+            currentWindow.style.top = y + 'px';
+            
+            e.preventDefault();
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            currentWindow = null;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        function onTouchEnd() {
+            isDragging = false;
+            currentWindow = null;
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+        }
+
+        // ========== ICON DRAGGING ==========
+        function initIconDragging() {
+            const icons = document.querySelectorAll('.app-icon');
+            
+            icons.forEach(icon => {
+                // Mouse events
+                icon.addEventListener('mousedown', startIconDrag);
+                icon.addEventListener('touchstart', startIconDragTouch, {passive: false});
+                
+                // Double click for opening
+                icon.addEventListener('dblclick', function() {
+                    const appId = this.id.replace('icon-', '');
+                    if (appId === 'notepad') {
+                        createNewTextFile();
+                    } else if (appId === 'github') {
+                        openLink('https://github.com/ilijxp');
+                    } else {
+                        openWindow(appId);
+                    }
+                });
+            });
+            
+            document.addEventListener('mousemove', dragIcon);
+            document.addEventListener('touchmove', dragIconTouch, {passive: false});
+            document.addEventListener('mouseup', stopIconDrag);
+            document.addEventListener('touchend', stopIconDrag);
+        }
+
+        function startIconDrag(e) {
+            isDraggingIcon = true;
+            draggedIcon = e.currentTarget;
+            draggedIcon.classList.add('dragging');
+            
+            const rect = draggedIcon.getBoundingClientRect();
+            iconStartX = e.clientX - rect.left;
+            iconStartY = e.clientY - rect.top;
+            
+            e.preventDefault();
+        }
+
+        function startIconDragTouch(e) {
+            const now = new Date().getTime();
+            const timeSinceLastTouch = now - lastTouchTime;
+            
+            // Double tap detection (for right click on mobile)
+            if (timeSinceLastTouch < 300 && timeSinceLastTouch > 0) {
+                // Double tap detected - show context menu
+                e.preventDefault();
+                showContextMenu(e.touches[0], 'icon');
+                lastTouchTime = 0;
+                return;
+            }
+            
+            lastTouchTime = now;
+            
+            isDraggingIcon = true;
+            draggedIcon = e.currentTarget;
+            draggedIcon.classList.add('dragging');
+            
+            const rect = draggedIcon.getBoundingClientRect();
+            iconStartX = e.touches[0].clientX - rect.left;
+            iconStartY = e.touches[0].clientY - rect.top;
+            
+            e.preventDefault();
+        }
+
+        function dragIcon(e) {
+            if (!isDraggingIcon || !draggedIcon) return;
+            
+            const desktop = document.getElementById('desktop');
+            const desktopRect = desktop.getBoundingClientRect();
+            
+            let x = e.clientX - desktopRect.left - iconStartX;
+            let y = e.clientY - desktopRect.top - iconStartY;
+            
+            // Keep within desktop bounds
+            const maxX = desktopRect.width - draggedIcon.offsetWidth;
+            const maxY = desktopRect.height - draggedIcon.offsetHeight;
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            draggedIcon.style.position = 'absolute';
+            draggedIcon.style.left = x + 'px';
+            draggedIcon.style.top = y + 'px';
+            
+            e.preventDefault();
+        }
+
+        function dragIconTouch(e) {
+            if (!isDraggingIcon || !draggedIcon || e.touches.length !== 1) return;
+            
+            const desktop = document.getElementById('desktop');
+            const desktopRect = desktop.getBoundingClientRect();
+            
+            let x = e.touches[0].clientX - desktopRect.left - iconStartX;
+            let y = e.touches[0].clientY - desktopRect.top - iconStartY;
+            
+            // Keep within desktop bounds
+            const maxX = desktopRect.width - draggedIcon.offsetWidth;
+            const maxY = desktopRect.height - draggedIcon.offsetHeight;
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            draggedIcon.style.position = 'absolute';
+            draggedIcon.style.left = x + 'px';
+            draggedIcon.style.top = y + 'px';
+            
+            e.preventDefault();
+        }
+
+        function stopIconDrag() {
+            if (!isDraggingIcon || !draggedIcon) return;
+            
+            isDraggingIcon = false;
+            draggedIcon.classList.remove('dragging');
+            draggedIcon = null;
+        }
+
+        // ========== START MENU ==========
+        function toggleStartMenu() {
             const menu = document.getElementById('start-menu');
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
             menu.style.zIndex = ++highestZ;
@@ -2068,43 +2428,6 @@ Right-click for more options!
             });
         });
 
-        // ========== DRAGGING LOGIC ==========
-        function dragWindow(e, winId) {
-            e.preventDefault();
-            isDragging = true;
-            currentWindow = document.getElementById(winId);
-            const rect = currentWindow.getBoundingClientRect();
-            dragOffsetX = e.clientX - rect.left;
-            dragOffsetY = e.clientY - rect.top;
-            
-            currentWindow.style.zIndex = ++highestZ;
-
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        }
-
-        function onMouseMove(e) {
-            if (!isDragging || !currentWindow) return;
-            let x = e.clientX - dragOffsetX;
-            let y = e.clientY - dragOffsetY;
-            
-            // Keep within bounds
-            const maxX = window.innerWidth - currentWindow.offsetWidth;
-            const maxY = window.innerHeight - currentWindow.offsetHeight;
-            x = Math.max(0, Math.min(x, maxX));
-            y = Math.max(0, Math.min(y, maxY));
-            
-            currentWindow.style.left = x + 'px';
-            currentWindow.style.top = y + 'px';
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            currentWindow = null;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-
         // ========== CONTEXT MENU SYSTEM ==========
         function showContextMenu(e, context) {
             e.preventDefault();
@@ -2114,7 +2437,7 @@ Right-click for more options!
             // Common items
             const refreshItem = document.createElement('div');
             refreshItem.className = 'context-item';
-            refreshItem.innerHTML = '<i class="fas fa-redo"></i> Refresh';
+            refreshItem.innerHTML = '<i class="fas fa-redo"></i> Osveži';
             refreshItem.onclick = () => {
                 if(context === 'desktop') location.reload();
                 if(context === 'browser') browserRefresh();
@@ -2125,7 +2448,7 @@ Right-click for more options!
             if(context === 'desktop') {
                 const newFileItem = document.createElement('div');
                 newFileItem.className = 'context-item';
-                newFileItem.innerHTML = '<i class="fas fa-file-alt"></i> New Text File';
+                newFileItem.innerHTML = '<i class="fas fa-file-alt"></i> Novi tekst fajl';
                 newFileItem.onclick = () => { createNewTextFile(); hideContextMenu(); };
                 menu.appendChild(newFileItem);
                 
@@ -2135,37 +2458,71 @@ Right-click for more options!
                 
                 const viewItem = document.createElement('div');
                 viewItem.className = 'context-item';
-                viewItem.innerHTML = '<i class="fas fa-th-large"></i> View';
+                viewItem.innerHTML = '<i class="fas fa-th-large"></i> Prikaz';
                 menu.appendChild(viewItem);
                 
                 const sortItem = document.createElement('div');
                 sortItem.className = 'context-item';
-                sortItem.innerHTML = '<i class="fas fa-sort-alpha-down"></i> Sort By';
+                sortItem.innerHTML = '<i class="fas fa-sort-alpha-down"></i> Sortiraj po';
                 menu.appendChild(sortItem);
             }
             
             if(context === 'browser') {
                 const newTabItem = document.createElement('div');
                 newTabItem.className = 'context-item';
-                newTabItem.innerHTML = '<i class="fas fa-plus"></i> New Tab';
+                newTabItem.innerHTML = '<i class="fas fa-plus"></i> Novi tab';
                 newTabItem.onclick = () => { addBrowserTab(); hideContextMenu(); };
                 menu.appendChild(newTabItem);
+            }
+            
+            if(context === 'icon') {
+                const openItem = document.createElement('div');
+                openItem.className = 'context-item';
+                openItem.innerHTML = '<i class="fas fa-folder-open"></i> Otvori';
+                openItem.onclick = () => { 
+                    const appId = draggedIcon ? draggedIcon.id.replace('icon-', '') : '';
+                    if (appId) {
+                        if (appId === 'notepad') createNewTextFile();
+                        else if (appId === 'github') openLink('https://github.com/ilijxp');
+                        else openWindow(appId);
+                    }
+                    hideContextMenu(); 
+                };
+                menu.appendChild(openItem);
+                
+                const renameItem = document.createElement('div');
+                renameItem.className = 'context-item';
+                renameItem.innerHTML = '<i class="fas fa-i-cursor"></i> Preimenuj';
+                menu.appendChild(renameItem);
+                
+                const separator = document.createElement('div');
+                separator.className = 'context-divider';
+                menu.appendChild(separator);
+                
+                const deleteItem = document.createElement('div');
+                deleteItem.className = 'context-item';
+                deleteItem.innerHTML = '<i class="fas fa-trash"></i> Obriši';
+                deleteItem.onclick = () => { 
+                    showNotification('Obrisano (simulacija)'); 
+                    hideContextMenu(); 
+                };
+                menu.appendChild(deleteItem);
             }
             
             if(context === 'clock') {
                 const dateItem = document.createElement('div');
                 dateItem.className = 'context-item';
-                dateItem.innerHTML = `<i class="far fa-calendar"></i> ${new Date().toLocaleDateString()}`;
+                dateItem.innerHTML = `<i class="far fa-calendar"></i> ${new Date().toLocaleDateString('sr-RS')}`;
                 menu.appendChild(dateItem);
                 
                 const timeItem = document.createElement('div');
                 timeItem.className = 'context-item';
-                timeItem.innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleTimeString()}`;
+                timeItem.innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleTimeString('sr-RS', {hour: '2-digit', minute:'2-digit'})}`;
                 menu.appendChild(timeItem);
             }
             
-            menu.style.left = e.pageX + 'px';
-            menu.style.top = e.pageY + 'px';
+            menu.style.left = (e.pageX || e.touches[0].pageX) + 'px';
+            menu.style.top = (e.pageY || e.touches[0].pageY) + 'px';
             menu.style.display = 'flex';
             menu.style.zIndex = 10001;
         }
@@ -2175,11 +2532,29 @@ Right-click for more options!
         }
 
         document.addEventListener('click', hideContextMenu);
+        document.addEventListener('touchstart', hideContextMenu, {passive: false});
 
-        // ========== TEXT FILE SYSTEM ==========
+        // ========== UTILITY FUNCTIONS ==========
+        function openLink(url) {
+            window.open(url, '_blank');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Kopirano u clipboard: ' + text);
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Kopirano u clipboard: ' + text);
+            });
+        }
+
         function createNewTextFile() {
-            if (!isLoggedIn) return;
-            
             textFileCounter++;
             const notepadContent = document.querySelector('.notepad-content');
             
@@ -2187,7 +2562,7 @@ Right-click for more options!
             const newTextarea = document.createElement('textarea');
             newTextarea.className = 'notepad-tab active';
             newTextarea.id = `notepad-file-${textFileCounter}`;
-            newTextarea.placeholder = 'Type here... You can edit this new file!';
+            newTextarea.placeholder = 'Kucajte ovde... Možete uređivati ovaj novi fajl!';
             
             // Hide other tabs
             document.querySelectorAll('.notepad-tab').forEach(tab => {
@@ -2198,7 +2573,7 @@ Right-click for more options!
             
             // Update window title
             const notepadTitle = document.querySelector('#win-notepad .title-bar span');
-            notepadTitle.textContent = `Notepad - New File ${textFileCounter}`;
+            notepadTitle.textContent = `Beležnica - Novi fajl ${textFileCounter}`;
             
             // Open notepad window
             openWindow('notepad');
@@ -2207,12 +2582,19 @@ Right-click for more options!
             setTimeout(() => newTextarea.focus(), 100);
         }
 
-        // ========== ADVANCED BROWSER ==========
-        let browserTabs = ['newtab'];
-        let currentBrowserTab = 'newtab';
-        let browserHistory = { newtab: ['https://www.google.com'] };
-        let browserHistoryIndex = { newtab: 0 };
+        function saveTxt() {
+            const activeTextarea = document.querySelector('.notepad-tab.active');
+            if(!activeTextarea) return;
+            
+            const text = activeTextarea.value;
+            const blob = new Blob([text], { type: "text/plain"});
+            const anchor = document.createElement("a");
+            anchor.href = URL.createObjectURL(blob);
+            anchor.download = "beleška.txt";
+            anchor.click();
+        }
 
+        // ========== BROWSER FUNCTIONS ==========
         function initBrowser() {
             // Initialize color palette for paint if needed
             if(!document.getElementById('paint-color-palette').innerHTML) {
@@ -2233,16 +2615,23 @@ Right-click for more options!
             const tabElement = document.createElement('div');
             tabElement.className = 'browser-tab';
             tabElement.dataset.tab = tabId;
-            tabElement.innerHTML = `New Tab <span class="close-tab" onclick="closeBrowserTab('${tabId}', event)">×</span>`;
+            tabElement.innerHTML = `Novi tab <span class="close-tab" onclick="closeBrowserTab('${tabId}', event)">×</span>`;
             tabElement.onclick = () => switchBrowserTab(tabId);
             
             document.getElementById('browser-tabs').appendChild(tabElement);
             
-            // Create content area with iframe
+            // Create content area
             const contentElement = document.createElement('div');
             contentElement.className = 'browser-tab-content';
             contentElement.id = `browser-tab-${tabId}`;
-            contentElement.innerHTML = `<iframe class="browser-iframe" src="https://www.google.com" id="browser-iframe-${tabId}" allow="fullscreen"></iframe>`;
+            contentElement.innerHTML = `<div class="browser-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Browser zabrane</h3>
+                <p>Zbog bezbednosnih ograničenja (CORS politika), ne možemo prikazati spoljne vebsajtove.</p>
+                <button onclick="window.open('https://www.google.com', '_blank')" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;">
+                    <i class="fas fa-external-link-alt"></i> Otvori Google u novom tabu
+                </button>
+            </div>`;
             
             document.querySelector('.browser-content').appendChild(contentElement);
             
@@ -2313,17 +2702,19 @@ Right-click for more options!
             browserHistory[currentBrowserTab].push(url);
             browserHistoryIndex[currentBrowserTab] = browserHistory[currentBrowserTab].length - 1;
             
-            // Update iframe
-            const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
-            if(iframe) {
-                iframe.src = url;
-            } else {
-                // For the default newtab
-                const defaultIframe = document.getElementById('browser-iframe-newtab');
-                if(defaultIframe) {
-                    defaultIframe.src = url;
-                }
-            }
+            // Show error message about CORS instead of trying to load iframe
+            const contentDiv = document.getElementById(`browser-tab-${currentBrowserTab}`);
+            contentDiv.innerHTML = `
+                <div class="browser-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Ne može se učitati sajt</h3>
+                    <p>URL: ${url}</p>
+                    <p>Zbog bezbednosnih ograničenja (CORS politika), ne možemo prikazati ovaj sajt unutar iframe-a.</p>
+                    <button onclick="window.open('${url}', '_blank')" style="padding: 12px 24px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 20px;">
+                        <i class="fas fa-external-link-alt"></i> Otvori u novom tabu
+                    </button>
+                </div>
+            `;
             
             // Update tab title
             const tabElement = document.querySelector(`.browser-tab[data-tab="${currentBrowserTab}"]`);
@@ -2332,7 +2723,7 @@ Right-click for more options!
                 tabElement.textContent = domain.substring(0, 15) + (domain.length > 15 ? '...' : '');
                 tabElement.innerHTML += `<span class="close-tab" onclick="closeBrowserTab('${currentBrowserTab}', event)">×</span>`;
             } catch(e) {
-                tabElement.textContent = 'Loading...';
+                tabElement.textContent = 'Učitavanje...';
                 tabElement.innerHTML += `<span class="close-tab" onclick="closeBrowserTab('${currentBrowserTab}', event)">×</span>`;
             }
         }
@@ -2347,16 +2738,7 @@ Right-click for more options!
                 browserHistoryIndex[currentBrowserTab]--;
                 const url = browserHistory[currentBrowserTab][browserHistoryIndex[currentBrowserTab]];
                 document.getElementById('browser-address').value = url;
-                
-                const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
-                if(iframe) {
-                    iframe.src = url;
-                } else {
-                    const defaultIframe = document.getElementById('browser-iframe-newtab');
-                    if(defaultIframe) {
-                        defaultIframe.src = url;
-                    }
-                }
+                browserNavigate();
             }
         }
 
@@ -2365,40 +2747,18 @@ Right-click for more options!
                 browserHistoryIndex[currentBrowserTab]++;
                 const url = browserHistory[currentBrowserTab][browserHistoryIndex[currentBrowserTab]];
                 document.getElementById('browser-address').value = url;
-                
-                const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
-                if(iframe) {
-                    iframe.src = url;
-                } else {
-                    const defaultIframe = document.getElementById('browser-iframe-newtab');
-                    if(defaultIframe) {
-                        defaultIframe.src = url;
-                    }
-                }
+                browserNavigate();
             }
         }
 
         function browserRefresh() {
-            const iframe = document.getElementById(`browser-iframe-${currentBrowserTab}`);
-            if(iframe) {
-                iframe.src = iframe.src;
-            } else {
-                const defaultIframe = document.getElementById('browser-iframe-newtab');
-                if(defaultIframe) {
-                    defaultIframe.src = defaultIframe.src;
-                }
+            const currentUrl = document.getElementById('browser-address').value;
+            if (currentUrl) {
+                browserNavigate();
             }
         }
 
-        // ========== ADVANCED PAINT ==========
-        let paintCtx;
-        let painting = false;
-        let paintTool = 'brush';
-        let paintColor = '#000000';
-        let brushSize = 3;
-        let startX, startY;
-        let snapshot;
-
+        // ========== PAINT FUNCTIONS ==========
         function initPaint() {
             const canvas = document.getElementById('advanced-paint-canvas');
             paintCtx = canvas.getContext('2d');
@@ -2413,38 +2773,41 @@ Right-click for more options!
                 initPaintColors();
             }
             
-            // Event listeners
+            // Event listeners for mouse
             canvas.addEventListener('mousedown', startPaint);
             canvas.addEventListener('mousemove', paintDraw);
             canvas.addEventListener('mouseup', stopPaint);
             canvas.addEventListener('mouseout', stopPaint);
             
-            // Touch support
-            canvas.addEventListener('touchstart', (e) => {
+            // Event listeners for touch
+            canvas.addEventListener('touchstart', function(e) {
                 e.preventDefault();
                 const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
                 const mouseEvent = new MouseEvent('mousedown', {
                     clientX: touch.clientX,
                     clientY: touch.clientY
                 });
                 canvas.dispatchEvent(mouseEvent);
-            });
+            }, {passive: false});
             
-            canvas.addEventListener('touchmove', (e) => {
+            canvas.addEventListener('touchmove', function(e) {
                 e.preventDefault();
+                if (e.touches.length !== 1) return;
                 const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
                 const mouseEvent = new MouseEvent('mousemove', {
                     clientX: touch.clientX,
                     clientY: touch.clientY
                 });
                 canvas.dispatchEvent(mouseEvent);
-            });
+            }, {passive: false});
             
-            canvas.addEventListener('touchend', (e) => {
+            canvas.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 const mouseEvent = new MouseEvent('mouseup');
                 canvas.dispatchEvent(mouseEvent);
-            });
+            }, {passive: false});
             
             // Update coordinates display
             canvas.addEventListener('mousemove', (e) => {
@@ -2479,7 +2842,13 @@ Right-click for more options!
 
         function selectPaintTool(tool) {
             paintTool = tool;
-            document.getElementById('paint-current-tool').textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+            document.getElementById('paint-current-tool').textContent = 
+                tool === 'brush' ? 'Četkica' :
+                tool === 'line' ? 'Linija' :
+                tool === 'rect' ? 'Pravougaonik' :
+                tool === 'circle' ? 'Krug' :
+                tool === 'text' ? 'Tekst' :
+                tool === 'eraser' ? 'Gumica' : tool;
             
             // Update UI
             document.querySelectorAll('.paint-tool').forEach(el => {
@@ -2504,8 +2873,9 @@ Right-click for more options!
         function startPaint(e) {
             painting = true;
             const canvas = document.getElementById('advanced-paint-canvas');
-            startX = e.offsetX;
-            startY = e.offsetY;
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
             
             // Save snapshot for some tools
             if(paintTool !== 'brush' && paintTool !== 'eraser') {
@@ -2525,8 +2895,9 @@ Right-click for more options!
             if(!painting) return;
             
             const canvas = document.getElementById('advanced-paint-canvas');
-            const x = e.offsetX;
-            const y = e.offsetY;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             
             paintCtx.strokeStyle = paintTool === 'eraser' ? '#FFFFFF' : paintColor;
             
@@ -2552,7 +2923,7 @@ Right-click for more options!
                     paintCtx.arc(startX, startY, radius, 0, 2 * Math.PI);
                     paintCtx.stroke();
                 } else if(paintTool === 'text') {
-                    const text = prompt('Enter text:', 'Hello');
+                    const text = prompt('Unesite tekst:', 'Zdravo');
                     if(text) {
                         paintCtx.font = `${brushSize * 5}px Arial`;
                         paintCtx.fillStyle = paintColor;
@@ -2581,67 +2952,62 @@ Right-click for more options!
         function savePaint() {
             const canvas = document.getElementById('advanced-paint-canvas');
             const link = document.createElement('a');
-            link.download = 'my-painting.png';
+            link.download = 'moj-crtez.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
+        }
+
+        // ========== TOUCH EVENTS FOR MOBILE ==========
+        function initTouchEvents() {
+            // Prevent zoom on double tap
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, {passive: false});
+            
+            // Prevent context menu on long press
+            document.addEventListener('contextmenu', function(e) {
+                if (isTouchDevice) {
+                    e.preventDefault();
+                }
+            });
         }
 
         // ========== CLOCK ==========
         function updateClock() {
             const now = new Date();
+            const time = now.toLocaleTimeString('sr-RS', {hour: '2-digit', minute:'2-digit'});
+            const date = now.toLocaleDateString('sr-RS');
             document.getElementById('clock').innerHTML = 
-                now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + '<br>' + 
-                now.toLocaleDateString();
+                `${time}<br>${date}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // ========== NOTEPAD SAVE ==========
-        function saveTxt() {
-            const activeTextarea = document.querySelector('.notepad-tab.active');
-            if(!activeTextarea) return;
-            
-            const text = activeTextarea.value;
-            const blob = new Blob([text], { type: "text/plain"});
-            const anchor = document.createElement("a");
-            anchor.href = URL.createObjectURL(blob);
-            anchor.download = "note.txt";
-            anchor.click();
-        }
-
-        // ========== UTILITY FUNCTIONS ==========
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('Copied to clipboard: ' + text);
-            });
-        }
-
-        function shutdownOS() {
-            if(confirm('Shut down Portfolio OS?')) {
-                document.body.innerHTML = `
-                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; color: white; font-family: monospace; font-size: 24px;">
-                        <div style="text-align: center;">
-                            <div style="margin-bottom: 20px;">Portfolio OS</div>
-                            <div style="font-size: 16px;">Shutting down...</div>
-                            <div style="font-size: 12px; margin-top: 40px; color: #aaa;">Press F5 to restart</div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
         // ========== INITIALIZATION ==========
-        initPaintColors();
-        
-        // Make desktop icons draggable
-        document.querySelectorAll('.app-icon').forEach(icon => {
-            icon.setAttribute('draggable', 'true');
-            icon.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', 'icon');
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize icon dragging
+            initIconDragging();
+            
+            // Initialize paint colors if needed
+            if(document.getElementById('paint-color-palette')) {
+                initPaintColors();
+            }
+            
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('Dobrodošli u Portfolio OS!');
+            }, 1000);
+            
+            // Check if touch device
+            if (isTouchDevice) {
+                document.body.classList.add('touch-device');
+                initTouchEvents();
+            }
         });
-        
-        console.log('Portfolio OS Pro v2.0 loaded successfully!');
+
+        console.log('Portfolio OS Pro v3.0 učitan uspešno!');
     </script>
 </body>
 </html>
